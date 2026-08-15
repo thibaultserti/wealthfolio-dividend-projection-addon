@@ -15,3 +15,8 @@ A Wealthfolio add-on providing interactive forward-looking dividend projections,
 - **12-Month Monthly Projection Chart**: Interactive bar chart forecasting payouts for the next 12 rolling months.
 - **Month Drill-Down View**: Click any month to inspect all contributing dividend payments, shares owned, payout amounts, and % contribution.
 - **Holdings Dividend Table**: Comprehensive table breakdown with sortable yields, yield on cost, frequency, payout months, and growth metrics.
+
+## Overview
+
+![Overview](assets/overview.png)
+
