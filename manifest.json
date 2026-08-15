@@ -1,0 +1,91 @@
+{
+  "id": "dividends-projection",
+  "name": "Dividends Projection",
+  "version": "1.0.0",
+  "description": "Visualize and project future dividend income, dividend yield, yield on cost, and historical dividend growth across portfolios",
+  "author": "thibaultserti",
+  "main": "dist/addon.js",
+  "sdkVersion": "3.7.0",
+  "minWealthfolioVersion": "3.6.3",
+  "enabled": true,
+  "contributes": {
+    "routes": [{ "id": "dividends-projection" }],
+    "links": {
+      "sidebar": [
+        {
+          "id": "dividends-projection",
+          "route": "dividends-projection",
+          "label": "Dividends Projection",
+          "icon": "coins",
+          "order": 45
+        }
+      ]
+    }
+  },
+  "hostDependencies": {
+    "@tanstack/react-query": "^5.90.0",
+    "@wealthfolio/addon-sdk": "^3.7.0",
+    "@wealthfolio/ui": "^3.7.0",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.561.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.7.0"
+  },
+  "permissions": [
+    {
+      "category": "portfolio",
+      "purpose": "Access holdings, cost basis, and current valuations to calculate dividend yield and yield on cost",
+      "functions": [
+        { "name": "getHoldings", "isDeclared": true, "isDetected": true },
+        { "name": "getHolding", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "accounts",
+      "purpose": "Filter and display dividend projections by portfolio or account",
+      "functions": [
+        { "name": "getAll", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "market-data",
+      "purpose": "Fetch per-share dividend distribution histories and frequencies for portfolio assets",
+      "functions": [
+        { "name": "fetchDividends", "isDeclared": true, "isDetected": true },
+        { "name": "searchTicker", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "activities",
+      "purpose": "Analyze historical dividend transactions to measure 12-month and 5-year dividend growth",
+      "functions": [
+        { "name": "getAll", "isDeclared": true, "isDetected": true },
+        { "name": "search", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "currency",
+      "purpose": "Convert foreign dividend payouts to your base currency",
+      "functions": [
+        { "name": "getAll", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "assets",
+      "purpose": "Access asset profile metadata such as exchange MIC and currency to resolve international stock tickers",
+      "functions": [
+        { "name": "getProfile", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "settings",
+      "purpose": "Get user base currency and preferences",
+      "functions": [
+        { "name": "get", "isDeclared": true, "isDetected": true }
+      ]
+    }
+  ],
+  "keywords": ["wealthfolio", "addon", "dividends", "income", "yield", "projection"],
+  "license": "MIT"
+}
