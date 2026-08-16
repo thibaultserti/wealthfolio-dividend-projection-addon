@@ -1,10 +1,12 @@
 import type { Holding, Asset, Account } from '@wealthfolio/addon-sdk';
 
 export interface AccountScope {
-  type: 'all' | 'group' | 'account';
+  type: 'all' | 'group' | 'account' | 'portfolio';
   id?: string;
   label?: string;
 }
+
+export type PortfolioScope = AccountScope;
 
 export interface RawStockFinancials {
   symbol: string;

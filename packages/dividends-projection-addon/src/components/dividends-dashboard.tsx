@@ -15,7 +15,7 @@ interface DividendsDashboardProps {
 }
 
 export const DividendsDashboard: React.FC<DividendsDashboardProps> = ({ api }) => {
-  const [scope, setScope] = useState<AccountScope>({ type: 'all', label: 'All Accounts' });
+  const [scope, setScope] = useState<AccountScope>({ type: 'all', label: 'All Portfolios' });
   const [selectedMonthKey, setSelectedMonthKey] = useState<string | null>(null);
 
   const { data: summary, isLoading, error, refetch, isRefetching } = useDividendData({

@@ -1,10 +1,12 @@
 export type DividendFrequency = 'monthly' | 'quarterly' | 'semi-annual' | 'annual' | 'irregular' | 'none';
 
 export interface AccountScope {
-  type: 'all' | 'group' | 'account';
+  type: 'all' | 'group' | 'account' | 'portfolio';
   id?: string;
   label?: string;
 }
+
+export type PortfolioScope = AccountScope;
 
 export interface MonthPayoutItem {
   holdingId: string;

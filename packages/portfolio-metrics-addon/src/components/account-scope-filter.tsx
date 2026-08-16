@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@wealthfolio/ui';
-import { ChevronDown, Folder, Layers, Wallet } from 'lucide-react';
+import { Briefcase, ChevronDown, Folder, Layers, Wallet } from 'lucide-react';
 
 interface AccountScopeFilterProps {
   api: HostAPI;
@@ -38,17 +38,23 @@ export const AccountScopeFilter: React.FC<AccountScopeFilterProps> = ({
 
   const activeAccounts = accounts.filter((a) => !a.isArchived);
 
-  // Extract distinct portfolio / groups
-  const groups = Array.from(
+  // 1. Group portfolios (if defined on accounts)
+  const groupPortfolios = Array.from(
     new Set(activeAccounts.map((a) => a.group).filter((g): g is string => Boolean(g && g.trim()))),
   );
 
-  let triggerLabel = 'Tous les comptes';
+  // 2. Investment portfolios (Securities / Crypto / non-cash accounts)
+  const portfolioAccounts = activeAccounts.filter(
+    (a) => a.accountType !== 'CASH' && a.accountType !== 'CREDIT_CARD',
+  );
+  const displayPortfolios = portfolioAccounts.length > 0 ? portfolioAccounts : activeAccounts;
+
+  let triggerLabel = 'All Portfolios';
   if (scope.type === 'group') {
-    triggerLabel = `Portefeuille : ${scope.label || scope.id}`;
-  } else if (scope.type === 'account') {
+    triggerLabel = `Portfolio: ${scope.label || scope.id}`;
+  } else if (scope.type === 'portfolio' || scope.type === 'account') {
     const acc = activeAccounts.find((a) => a.id === scope.id);
-    triggerLabel = acc ? acc.name : 'Compte';
+    triggerLabel = acc ? acc.name : scope.label || 'Portfolio';
   }
 
   return (
@@ -57,74 +63,128 @@ export const AccountScopeFilter: React.FC<AccountScopeFilterProps> = ({
         <Button variant="outline" className="flex items-center gap-2 h-9 px-3 text-sm font-medium">
           {scope.type === 'all' && <Layers className="w-4 h-4 text-primary" />}
           {scope.type === 'group' && <Folder className="w-4 h-4 text-amber-500" />}
+          {scope.type === 'portfolio' && <Briefcase className="w-4 h-4 text-primary" />}
           {scope.type === 'account' && <Wallet className="w-4 h-4 text-blue-500" />}
-          <span>{triggerLabel}</span>
-          <ChevronDown className="w-3.5 h-3.5 opacity-60 ml-1" />
+          <span className="truncate max-w-[140px] sm:max-w-[200px]">{triggerLabel}</span>
+          <ChevronDown className="w-3.5 h-3.5 opacity-60 ml-auto" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64 max-h-96 overflow-y-auto">
+        {/* All Portfolios */}
         <DropdownMenuItem
-          onClick={() => onScopeChange({ type: 'all', label: 'Tous les comptes' })}
-          className={`flex items-center gap-2 cursor-pointer ${scope.type === 'all' ? 'bg-accent font-medium' : ''}`}
+          onClick={() => onScopeChange({ type: 'all', label: 'All Portfolios' })}
+          className={`flex items-center gap-2 cursor-pointer font-medium ${
+            scope.type === 'all' ? 'bg-accent font-semibold' : ''
+          }`}
         >
           <Layers className="w-4 h-4 text-primary" />
-          <span>Tous les comptes</span>
+          <span>All Portfolios</span>
           <span className="ml-auto text-xs text-muted-foreground">({activeAccounts.length})</span>
         </DropdownMenuItem>
 
-        {groups.length > 0 && (
+        {/* Portfolios Section */}
+        {(groupPortfolios.length > 0 || displayPortfolios.length > 0) && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuLabel className="text-xs text-muted-foreground font-normal uppercase tracking-wider px-2 py-1">
-              Portefeuilles & Groupes
+            <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider px-2 py-1">
+              Portfolios
             </DropdownMenuLabel>
-            {groups.map((group) => {
-              const groupCount = activeAccounts.filter((a) => a.group === group).length;
-              const isSelected = scope.type === 'group' && scope.id === group;
+
+            {/* Groups / multi-account portfolios if any */}
+            {groupPortfolios.map((groupName) => {
+              const count = activeAccounts.filter((a) => a.group === groupName).length;
+              const isSelected = scope.type === 'group' && scope.id === groupName;
               return (
                 <DropdownMenuItem
-                  key={group}
-                  onClick={() => onScopeChange({ type: 'group', id: group, label: group })}
-                  className={`flex items-center gap-2 cursor-pointer ${isSelected ? 'bg-accent font-medium' : ''}`}
+                  key={`group-${groupName}`}
+                  onClick={() =>
+                    onScopeChange({
+                      type: 'group',
+                      id: groupName,
+                      label: groupName,
+                    })
+                  }
+                  className={`flex items-center gap-2 cursor-pointer ${
+                    isSelected ? 'bg-accent font-semibold' : ''
+                  }`}
                 >
                   <Folder className="w-4 h-4 text-amber-500" />
-                  <span className="truncate">{group}</span>
-                  <span className="ml-auto text-xs text-muted-foreground">({groupCount})</span>
+                  <span className="truncate">{groupName}</span>
+                  <span className="ml-auto text-xs text-muted-foreground">({count})</span>
+                </DropdownMenuItem>
+              );
+            })}
+
+            {/* Portfolio accounts */}
+            {displayPortfolios.map((account) => {
+              const isSelected = scope.type === 'portfolio' && scope.id === account.id;
+              return (
+                <DropdownMenuItem
+                  key={`portfolio-${account.id}`}
+                  onClick={() =>
+                    onScopeChange({
+                      type: 'portfolio',
+                      id: account.id,
+                      label: account.name,
+                    })
+                  }
+                  className={`flex items-center gap-2 cursor-pointer ${
+                    isSelected ? 'bg-accent font-semibold' : ''
+                  }`}
+                >
+                  <Briefcase className="w-4 h-4 text-primary" />
+                  <span className="truncate">{account.name}</span>
+                  {account.currency && (
+                    <span className="ml-auto text-[10px] text-muted-foreground uppercase bg-muted/60 px-1.5 py-0.5 rounded">
+                      {account.currency}
+                    </span>
+                  )}
                 </DropdownMenuItem>
               );
             })}
           </>
         )}
 
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-xs text-muted-foreground font-normal uppercase tracking-wider px-2 py-1">
-          Comptes individuels
-        </DropdownMenuLabel>
-        {activeAccounts.map((account) => {
-          const isSelected = scope.type === 'account' && scope.id === account.id;
-          return (
-            <DropdownMenuItem
-              key={account.id}
-              onClick={() =>
-                onScopeChange({
-                  type: 'account',
-                  id: account.id,
-                  label: account.name,
-                })
-              }
-              className={`flex items-center gap-2 cursor-pointer ${isSelected ? 'bg-accent font-medium' : ''}`}
-            >
-              <Wallet className="w-4 h-4 text-blue-500" />
-              <div className="flex flex-col truncate">
-                <span className="truncate">{account.name}</span>
-                {account.group && (
-                  <span className="text-[10px] text-muted-foreground truncate">{account.group}</span>
-                )}
-              </div>
-              <span className="ml-auto text-xs text-muted-foreground uppercase">{account.currency}</span>
-            </DropdownMenuItem>
-          );
-        })}
+        {/* Individual Accounts Section */}
+        {activeAccounts.length > 0 && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider px-2 py-1">
+              Individual Accounts
+            </DropdownMenuLabel>
+            {activeAccounts.map((account) => {
+              const isSelected = scope.type === 'account' && scope.id === account.id;
+              return (
+                <DropdownMenuItem
+                  key={`account-${account.id}`}
+                  onClick={() =>
+                    onScopeChange({
+                      type: 'account',
+                      id: account.id,
+                      label: account.name,
+                    })
+                  }
+                  className={`flex items-center gap-2 cursor-pointer ${
+                    isSelected ? 'bg-accent font-semibold' : ''
+                  }`}
+                >
+                  <Wallet className="w-4 h-4 text-blue-500" />
+                  <div className="flex flex-col truncate min-w-0">
+                    <span className="truncate">{account.name}</span>
+                    {account.group && (
+                      <span className="text-[10px] text-muted-foreground truncate">{account.group}</span>
+                    )}
+                  </div>
+                  {account.currency && (
+                    <span className="ml-auto text-[10px] text-muted-foreground uppercase bg-muted/60 px-1.5 py-0.5 rounded">
+                      {account.currency}
+                    </span>
+                  )}
+                </DropdownMenuItem>
+              );
+            })}
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

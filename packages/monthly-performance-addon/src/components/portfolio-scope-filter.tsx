@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { HostAPI, Account } from '@wealthfolio/addon-sdk';
-import type { AccountScope } from '../types';
+import type { PortfolioScope } from '../types';
 import {
   Button,
   DropdownMenu,
@@ -13,13 +13,13 @@ import {
 } from '@wealthfolio/ui';
 import { Briefcase, ChevronDown, Folder, Layers, Wallet } from 'lucide-react';
 
-interface AccountScopeFilterProps {
+interface PortfolioScopeFilterProps {
   api: HostAPI;
-  scope: AccountScope;
-  onScopeChange: (scope: AccountScope) => void;
+  scope: PortfolioScope;
+  onScopeChange: (scope: PortfolioScope) => void;
 }
 
-export const AccountScopeFilter: React.FC<AccountScopeFilterProps> = ({
+export const PortfolioScopeFilter: React.FC<PortfolioScopeFilterProps> = ({
   api,
   scope,
   onScopeChange,
@@ -69,7 +69,7 @@ export const AccountScopeFilter: React.FC<AccountScopeFilterProps> = ({
           <ChevronDown className="w-3.5 h-3.5 opacity-60 ml-auto" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-64 max-h-96 overflow-y-auto">
+      <DropdownMenuContent align="end" className="w-64 max-h-96 overflow-y-auto">
         {/* All Portfolios */}
         <DropdownMenuItem
           onClick={() => onScopeChange({ type: 'all', label: 'All Portfolios' })}

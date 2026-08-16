@@ -31,7 +31,7 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
   const [activeTab, setActiveTab] = useState<'single' | 'compare'>('single');
   const [scope, setScope] = useState<AccountScope>({
     type: 'all',
-    label: 'Tous les comptes',
+    label: 'All Portfolios',
   });
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 

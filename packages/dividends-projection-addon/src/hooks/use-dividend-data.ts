@@ -131,7 +131,7 @@ export function useDividendData({
         targetAccounts = accounts.filter((a) => !a.isArchived);
       } else if (scope.type === 'group') {
         targetAccounts = accounts.filter((a) => !a.isArchived && a.group === scope.id);
-      } else if (scope.type === 'account' && scope.id) {
+      } else if ((scope.type === 'account' || scope.type === 'portfolio') && scope.id) {
         targetAccounts = accounts.filter((a) => a.id === scope.id);
       } else {
         targetAccounts = accounts.filter((a) => !a.isArchived);

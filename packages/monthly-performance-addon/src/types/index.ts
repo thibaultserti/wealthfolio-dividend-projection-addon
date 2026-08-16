@@ -28,11 +28,13 @@ export interface YearComparisonData {
 
 export type MonthlyViewMode = 'portfolio' | 'benchmark' | 'relative';
 
-export interface AccountScope {
-  type: 'all' | 'account' | 'group';
+export interface PortfolioScope {
+  type: 'all' | 'portfolio' | 'account';
   id?: string;
   label?: string;
 }
+
+export type AccountScope = PortfolioScope;
 
 export interface BenchmarkPreset {
   id: string;

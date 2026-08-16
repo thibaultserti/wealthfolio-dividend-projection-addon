@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import type { HostAPI } from '@wealthfolio/addon-sdk';
-import type { AccountScope, MonthlyViewMode } from '../types';
+import type { PortfolioScope, MonthlyViewMode } from '../types';
 import { useMonthlyPerformance } from '../hooks/use-monthly-performance';
 import { calculatePerformanceKPIs } from '../utils/monthly-performance-utils';
-import { AccountScopeFilter } from './account-scope-filter';
+import { PortfolioScopeFilter } from './portfolio-scope-filter';
 import { BenchmarkSelector } from './benchmark-selector';
 import { MonthlyKPIs } from './monthly-kpis';
 import { MonthlyPerformanceChart } from './monthly-performance-chart';
@@ -35,9 +35,9 @@ interface MonthlyPerformanceDashboardProps {
 export const MonthlyPerformanceDashboard: React.FC<MonthlyPerformanceDashboardProps> = ({
   api,
 }) => {
-  const [scope, setScope] = useState<AccountScope>({
+  const [scope, setScope] = useState<PortfolioScope>({
     type: 'all',
-    label: 'All Accounts',
+    label: 'All Portfolios',
   });
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [benchmarkSymbol, setBenchmarkSymbol] = useState<string | null>(null);
@@ -126,7 +126,7 @@ export const MonthlyPerformanceDashboard: React.FC<MonthlyPerformanceDashboardPr
             onChange={setDateRange}
             hiddenRanges={['1D']}
           />
-          <AccountScopeFilter api={api} scope={scope} onScopeChange={setScope} />
+          <PortfolioScopeFilter api={api} scope={scope} onScopeChange={setScope} />
           <BenchmarkSelector
             api={api}
             benchmarkSymbol={benchmarkSymbol}

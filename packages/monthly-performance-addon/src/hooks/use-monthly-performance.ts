@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import type { HostAPI, ReturnData, PerformanceResult, Account } from '@wealthfolio/addon-sdk';
-import type { AccountScope, YearComparisonData, MonthlyPerformanceKPIs } from '../types';
+import type { PortfolioScope, YearComparisonData, MonthlyPerformanceKPIs } from '../types';
 import {
   calculateMonthlyReturns,
   buildMonthlyComparison,
@@ -9,7 +9,7 @@ import {
 
 interface UseMonthlyPerformanceOptions {
   api: HostAPI;
-  scope: AccountScope;
+  scope: PortfolioScope;
   benchmarkSymbol?: string | null;
 }
 
@@ -51,7 +51,7 @@ export function useMonthlyPerformance({
           return await api.performance.calculateHistory('account', scope.id);
         }
 
-        // Case 2: All accounts or Group selected
+        // Case 2: All Portfolios or Specific Portfolio (Group) selected
         let accounts: Account[] = [];
         try {
           accounts = await api.accounts.getAll();
@@ -61,7 +61,7 @@ export function useMonthlyPerformance({
 
         const activeAccounts = accounts.filter((a) => !a.isArchived);
         const scopedAccounts =
-          scope.type === 'group' && scope.id
+          (scope.type === 'portfolio' || scope.type === 'group') && scope.id
             ? activeAccounts.filter((a) => a.group === scope.id)
             : activeAccounts;
 
@@ -74,14 +74,16 @@ export function useMonthlyPerformance({
           return await api.performance.calculateHistory('account', scopedAccounts[0].id);
         }
 
-        // If multiple accounts, attempt portfolio:all first
-        try {
-          const res = await api.performance.calculateHistory('account', 'portfolio:all');
-          if (res && res.series && res.series.length >= 2) {
-            return res;
+        // If 'all' scope, try portfolio:all first
+        if (scope.type === 'all') {
+          try {
+            const res = await api.performance.calculateHistory('account', 'portfolio:all');
+            if (res && res.series && res.series.length >= 2) {
+              return res;
+            }
+          } catch {
+            // ignore fallback
           }
-        } catch {
-          // ignore fallback
         }
 
         // Fetch performance for each scoped account in parallel
@@ -169,9 +171,9 @@ export function useMonthlyPerformance({
   const portfolioName =
     scope.type === 'account' && scope.label
       ? scope.label
-      : scope.type === 'group' && scope.label
-      ? `Group: ${scope.label}`
-      : 'All Portfolio';
+      : (scope.type === 'portfolio' || scope.type === 'group') && scope.label
+      ? `Portfolio: ${scope.label}`
+      : 'All Portfolios';
   const benchmarkName = benchmarkSymbol ? benchmarkSymbol : null;
   const baseCurrency = (settingsQuery.data as any)?.baseCurrency || 'USD';
 
