@@ -282,10 +282,12 @@ export function useDividendData({
       // 6. Fetch activities to calculate historical dividend transactions and fallback
       let activities: ActivityDetails[] = [];
       try {
-        if (scope.type === 'account' && scope.id) {
+        if ((scope.type === 'account' || scope.type === 'portfolio') && scope.id) {
           activities = await api.activities.getAll(scope.id);
         } else {
-          activities = await api.activities.getAll();
+          const allActivities = await api.activities.getAll();
+          const targetAccountIds = new Set(targetAccounts.map((a) => a.id));
+          activities = allActivities.filter((a) => targetAccountIds.has(a.accountId));
         }
       } catch {
         activities = [];

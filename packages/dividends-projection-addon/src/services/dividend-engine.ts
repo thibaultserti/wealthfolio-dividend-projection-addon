@@ -193,32 +193,57 @@ export function analyzeDividendSchedule(
 
   const payoutMonths = Array.from(monthSet).sort((a, b) => a - b);
 
-  // 12-Month YoY Growth
+  // 12-Month YoY Growth (per share)
   let growth12MPct: number | null = null;
-  const sumLast12m = last12mEvents.reduce((acc, e) => acc + e.amount, 0);
-  const sumPrev12m = prev12mEvents.reduce((acc, e) => acc + e.amount, 0);
-  if (sumPrev12m > 0 && sumLast12m > 0) {
-    growth12MPct = ((sumLast12m - sumPrev12m) / sumPrev12m) * 100;
+  if (sorted.length >= 2) {
+    const latest = sorted[sorted.length - 1];
+    // Find prior year payment (300 to 430 days prior to latest event)
+    const priorYearEvent = sorted
+      .slice(0, -1)
+      .reverse()
+      .find((e) => latest.date - e.date >= 300 * 86400 && latest.date - e.date <= 430 * 86400);
+
+    if (priorYearEvent && priorYearEvent.amount > 0 && latest.amount > 0) {
+      const rate = ((latest.amount - priorYearEvent.amount) / priorYearEvent.amount) * 100;
+      if (Math.abs(rate) <= 100) {
+        growth12MPct = rate;
+      }
+    } else {
+      const prev = sorted[sorted.length - 2];
+      if (prev && prev.amount > 0 && latest.amount > 0 && latest.date - prev.date >= 60 * 86400) {
+        const rate = ((latest.amount - prev.amount) / prev.amount) * 100;
+        if (Math.abs(rate) <= 100) {
+          growth12MPct = rate;
+        }
+      }
+    }
   }
 
-  // 5-Year CAGR Growth
+  // 5-Year CAGR Growth (per share)
   let growth5YPct: number | null = null;
-  const fiveYearsAgoSec = nowSec - 5 * oneYearSec;
-  const fiveYearEvents = sorted.filter(
-    (e) => e.date >= fiveYearsAgoSec && e.date < fiveYearsAgoSec + oneYearSec,
-  );
-  const sum5YAgo = fiveYearEvents.reduce((acc, e) => acc + e.amount, 0);
-  if (sum5YAgo > 0 && sumLast12m > 0) {
-    growth5YPct = (Math.pow(sumLast12m / sum5YAgo, 1 / 5) - 1) * 100;
-  } else {
-    // If not full 5 years, try 3-year CAGR
-    const threeYearsAgoSec = nowSec - 3 * oneYearSec;
-    const threeYearEvents = sorted.filter(
-      (e) => e.date >= threeYearsAgoSec && e.date < threeYearsAgoSec + oneYearSec,
+  if (sorted.length >= 2) {
+    const latest = sorted[sorted.length - 1];
+    const fiveYearEvent = sorted.find(
+      (e) => latest.date - e.date >= 4 * oneYearSec && latest.date - e.date <= 6 * oneYearSec,
     );
-    const sum3YAgo = threeYearEvents.reduce((acc, e) => acc + e.amount, 0);
-    if (sum3YAgo > 0 && sumLast12m > 0) {
-      growth5YPct = (Math.pow(sumLast12m / sum3YAgo, 1 / 3) - 1) * 100;
+
+    if (fiveYearEvent && fiveYearEvent.amount > 0 && latest.amount > 0) {
+      const yearsDiff = (latest.date - fiveYearEvent.date) / oneYearSec;
+      const cagr = (Math.pow(latest.amount / fiveYearEvent.amount, 1 / yearsDiff) - 1) * 100;
+      if (Math.abs(cagr) <= 100) {
+        growth5YPct = cagr;
+      }
+    } else {
+      const oldestMultiYearEvent = sorted.find((e) => latest.date - e.date >= 2 * oneYearSec);
+      if (oldestMultiYearEvent && oldestMultiYearEvent.amount > 0 && latest.amount > 0) {
+        const yearsDiff = (latest.date - oldestMultiYearEvent.date) / oneYearSec;
+        if (yearsDiff >= 1.8) {
+          const cagr = (Math.pow(latest.amount / oldestMultiYearEvent.amount, 1 / yearsDiff) - 1) * 100;
+          if (Math.abs(cagr) <= 100) {
+            growth5YPct = cagr;
+          }
+        }
+      }
     }
   }
 
@@ -501,8 +526,8 @@ export function calculateDividendsSummary({
       growth12MPct: schedule.growth12MPct,
       growth5YPct: schedule.growth5YPct,
       isPayer,
-      weightInIncomePct: 0, // computed below
-      weightInPortfolioPct: 0, // computed below
+      weightInIncomePct: 0,
+      weightInPortfolioPct: 0,
     });
   }
 
@@ -559,48 +584,7 @@ function calculatePortfolioDividendGrowth(
   growth5YPct: number | null;
   historicalYearsData: { year: number; amount: number; growthPct: number | null }[];
 } {
-  // If we have DIVIDEND activities, group by year
-  const divActivities = activities.filter((a) => a.activityType === 'DIVIDEND');
-
-  if (divActivities.length > 0) {
-    const yearlySums: Record<number, number> = {};
-    divActivities.forEach((a) => {
-      const d = new Date(a.date);
-      const year = d.getFullYear();
-      const amount = Number(a.amount) || 0;
-      yearlySums[year] = (yearlySums[year] || 0) + amount;
-    });
-
-    const years = Object.keys(yearlySums)
-      .map(Number)
-      .sort((a, b) => a - b);
-
-    const historicalYearsData = years.map((year, idx) => {
-      const amount = yearlySums[year];
-      const prevAmount = idx > 0 ? yearlySums[years[idx - 1]] : null;
-      const growthPct = prevAmount && prevAmount > 0 ? ((amount - prevAmount) / prevAmount) * 100 : null;
-      return { year, amount, growthPct };
-    });
-
-    const currentYear = new Date().getFullYear();
-    const lastYear = currentYear - 1;
-    const twoYearsAgo = currentYear - 2;
-    const fiveYearsAgo = currentYear - 5;
-
-    let growth12MPct: number | null = null;
-    if (yearlySums[lastYear] && yearlySums[twoYearsAgo] && yearlySums[twoYearsAgo] > 0) {
-      growth12MPct = ((yearlySums[lastYear] - yearlySums[twoYearsAgo]) / yearlySums[twoYearsAgo]) * 100;
-    }
-
-    let growth5YPct: number | null = null;
-    if (yearlySums[lastYear] && yearlySums[fiveYearsAgo] && yearlySums[fiveYearsAgo] > 0) {
-      growth5YPct = (Math.pow(yearlySums[lastYear] / yearlySums[fiveYearsAgo], 1 / 5) - 1) * 100;
-    }
-
-    return { growth12MPct, growth5YPct, historicalYearsData };
-  }
-
-  // Fallback: aggregate weighted average growth rates from holdings
+  // Aggregate income-weighted average organic dividend growth from holdings
   const payers = holdings.filter((h) => h.isPayer && h.annualDividendBase > 0);
   const totalPayerIncome = payers.reduce((acc, h) => acc + h.annualDividendBase, 0);
 
@@ -611,19 +595,45 @@ function calculatePortfolioDividendGrowth(
 
   payers.forEach((h) => {
     const weight = totalPayerIncome > 0 ? h.annualDividendBase / totalPayerIncome : 0;
-    if (h.growth12MPct !== null && !isNaN(h.growth12MPct)) {
+    if (h.growth12MPct !== null && !isNaN(h.growth12MPct) && Math.abs(h.growth12MPct) <= 100) {
       weighted12MGrowth += h.growth12MPct * weight;
       weight12MCount += weight;
     }
-    if (h.growth5YPct !== null && !isNaN(h.growth5YPct)) {
+    if (h.growth5YPct !== null && !isNaN(h.growth5YPct) && Math.abs(h.growth5YPct) <= 100) {
       weighted5YGrowth += h.growth5YPct * weight;
       weight5YCount += weight;
     }
   });
 
-  return {
-    growth12MPct: weight12MCount > 0 ? weighted12MGrowth / weight12MCount : null,
-    growth5YPct: weight5YCount > 0 ? weighted5YGrowth / weight5YCount : null,
-    historicalYearsData: [],
-  };
+  const growth12MPct = weight12MCount > 0 ? weighted12MGrowth / weight12MCount : null;
+  const growth5YPct = weight5YCount > 0 ? weighted5YGrowth / weight5YCount : null;
+
+  // Historical received dividends by calendar year (from transaction records)
+  const divActivities = activities.filter(
+    (a) => a.activityType === 'DIVIDEND' || a.activityType?.toUpperCase() === 'DIVIDEND',
+  );
+
+  let historicalYearsData: { year: number; amount: number; growthPct: number | null }[] = [];
+  if (divActivities.length > 0) {
+    const yearlySums: Record<number, number> = {};
+    divActivities.forEach((a) => {
+      const d = new Date(a.date);
+      const year = d.getFullYear();
+      const amount = Math.abs(Number(a.amount) || 0);
+      yearlySums[year] = (yearlySums[year] || 0) + amount;
+    });
+
+    const years = Object.keys(yearlySums)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    historicalYearsData = years.map((year, idx) => {
+      const amount = yearlySums[year];
+      const prevAmount = idx > 0 ? yearlySums[years[idx - 1]] : null;
+      const growthPct = prevAmount && prevAmount > 0 ? ((amount - prevAmount) / prevAmount) * 100 : null;
+      return { year, amount, growthPct };
+    });
+  }
+
+  return { growth12MPct, growth5YPct, historicalYearsData };
 }

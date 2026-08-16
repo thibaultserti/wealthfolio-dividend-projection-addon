@@ -223,4 +223,57 @@ describe('Dividend Engine', () => {
     expect(summary.projectedAnnualIncome).toBe(0);
     expect(summary.holdings[0].isPayer).toBe(false);
   });
+
+  it('calculates dividend growth from historical events and fallbacks', () => {
+    const mockHoldings: Holding[] = [
+      {
+        id: 'h-apple',
+        holdingType: 'security',
+        accountId: 'acc1',
+        instrument: {
+          id: 'asset-aapl',
+          symbol: 'AAPL',
+          name: 'Apple Inc.',
+          currency: 'USD',
+          quoteMode: 'MARKET',
+        },
+        quantity: 100,
+        localCurrency: 'USD',
+        baseCurrency: 'USD',
+        fxRate: 1,
+        marketValue: { local: 15000, base: 15000 },
+        costBasis: { local: 10000, base: 10000 },
+        price: 150,
+        weight: 1,
+        asOfDate: '2026-08-15',
+      },
+    ];
+
+    const now = Math.floor(Date.now() / 1000);
+    const day = 86400;
+    const mockEvents: Record<string, DividendEvent[]> = {
+      AAPL: [
+        // 2 years ago: $0.23 / quarter ($0.92 / yr)
+        { amount: 0.23, date: now - 720 * day },
+        { amount: 0.23, date: now - 630 * day },
+        { amount: 0.23, date: now - 540 * day },
+        { amount: 0.23, date: now - 450 * day },
+        // 1 year ago: $0.24 / quarter ($0.96 / yr)
+        { amount: 0.24, date: now - 360 * day },
+        { amount: 0.24, date: now - 270 * day },
+        { amount: 0.24, date: now - 180 * day },
+        { amount: 0.24, date: now - 90 * day },
+      ],
+    };
+
+    const summary = calculateDividendsSummary({
+      holdings: mockHoldings,
+      dividendEventsBySymbol: mockEvents,
+      baseCurrency: 'USD',
+    });
+
+    expect(summary.growth12MPct).not.toBeNull();
+    expect(summary.growth12MPct).toBeCloseTo(4.35, 1);
+  });
 });
+
