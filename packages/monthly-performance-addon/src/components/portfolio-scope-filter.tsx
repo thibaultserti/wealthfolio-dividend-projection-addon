@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@wealthfolio/ui';
-import { Briefcase, ChevronDown, Folder, Layers, Wallet } from 'lucide-react';
+import { ChevronDown, Folder, Layers, Wallet } from 'lucide-react';
 
 interface PortfolioScopeFilterProps {
   api: HostAPI;
@@ -38,23 +38,17 @@ export const PortfolioScopeFilter: React.FC<PortfolioScopeFilterProps> = ({
 
   const activeAccounts = accounts.filter((a) => !a.isArchived);
 
-  // 1. Group portfolios (if defined on accounts)
+  // Group portfolios (defined via account.group)
   const groupPortfolios = Array.from(
     new Set(activeAccounts.map((a) => a.group).filter((g): g is string => Boolean(g && g.trim()))),
   );
 
-  // 2. Investment portfolios (Securities / Crypto / non-cash accounts)
-  const portfolioAccounts = activeAccounts.filter(
-    (a) => a.accountType !== 'CASH' && a.accountType !== 'CREDIT_CARD',
-  );
-  const displayPortfolios = portfolioAccounts.length > 0 ? portfolioAccounts : activeAccounts;
-
   let triggerLabel = 'All Portfolios';
-  if (scope.type === 'group') {
+  if (scope.type === 'group' || scope.type === 'portfolio') {
     triggerLabel = `Portfolio: ${scope.label || scope.id}`;
-  } else if (scope.type === 'portfolio' || scope.type === 'account') {
+  } else if (scope.type === 'account') {
     const acc = activeAccounts.find((a) => a.id === scope.id);
-    triggerLabel = acc ? acc.name : scope.label || 'Portfolio';
+    triggerLabel = acc ? acc.name : scope.label || 'Account';
   }
 
   return (
@@ -62,8 +56,9 @@ export const PortfolioScopeFilter: React.FC<PortfolioScopeFilterProps> = ({
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="flex items-center gap-2 h-9 px-3 text-sm font-medium">
           {scope.type === 'all' && <Layers className="w-4 h-4 text-primary" />}
-          {scope.type === 'group' && <Folder className="w-4 h-4 text-amber-500" />}
-          {scope.type === 'portfolio' && <Briefcase className="w-4 h-4 text-primary" />}
+          {(scope.type === 'group' || scope.type === 'portfolio') && (
+            <Folder className="w-4 h-4 text-amber-500" />
+          )}
           {scope.type === 'account' && <Wallet className="w-4 h-4 text-blue-500" />}
           <span className="truncate max-w-[140px] sm:max-w-[200px]">{triggerLabel}</span>
           <ChevronDown className="w-3.5 h-3.5 opacity-60 ml-auto" />
@@ -82,18 +77,17 @@ export const PortfolioScopeFilter: React.FC<PortfolioScopeFilterProps> = ({
           <span className="ml-auto text-xs text-muted-foreground">({activeAccounts.length})</span>
         </DropdownMenuItem>
 
-        {/* Portfolios Section */}
-        {(groupPortfolios.length > 0 || displayPortfolios.length > 0) && (
+        {/* Portfolios (Groups) Section */}
+        {groupPortfolios.length > 0 && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider px-2 py-1">
               Portfolios
             </DropdownMenuLabel>
-
-            {/* Groups / multi-account portfolios if any */}
             {groupPortfolios.map((groupName) => {
               const count = activeAccounts.filter((a) => a.group === groupName).length;
-              const isSelected = scope.type === 'group' && scope.id === groupName;
+              const isSelected =
+                (scope.type === 'group' || scope.type === 'portfolio') && scope.id === groupName;
               return (
                 <DropdownMenuItem
                   key={`group-${groupName}`}
@@ -111,34 +105,6 @@ export const PortfolioScopeFilter: React.FC<PortfolioScopeFilterProps> = ({
                   <Folder className="w-4 h-4 text-amber-500" />
                   <span className="truncate">{groupName}</span>
                   <span className="ml-auto text-xs text-muted-foreground">({count})</span>
-                </DropdownMenuItem>
-              );
-            })}
-
-            {/* Portfolio accounts */}
-            {displayPortfolios.map((account) => {
-              const isSelected = scope.type === 'portfolio' && scope.id === account.id;
-              return (
-                <DropdownMenuItem
-                  key={`portfolio-${account.id}`}
-                  onClick={() =>
-                    onScopeChange({
-                      type: 'portfolio',
-                      id: account.id,
-                      label: account.name,
-                    })
-                  }
-                  className={`flex items-center gap-2 cursor-pointer ${
-                    isSelected ? 'bg-accent font-semibold' : ''
-                  }`}
-                >
-                  <Briefcase className="w-4 h-4 text-primary" />
-                  <span className="truncate">{account.name}</span>
-                  {account.currency && (
-                    <span className="ml-auto text-[10px] text-muted-foreground uppercase bg-muted/60 px-1.5 py-0.5 rounded">
-                      {account.currency}
-                    </span>
-                  )}
                 </DropdownMenuItem>
               );
             })}

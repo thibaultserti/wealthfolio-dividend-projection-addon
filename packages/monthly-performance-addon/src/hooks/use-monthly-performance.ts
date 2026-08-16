@@ -46,12 +46,12 @@ export function useMonthlyPerformance({
     queryKey: ['monthly-performance-portfolio', scope.type, scope.id],
     queryFn: async (): Promise<PerformanceResult | null> => {
       try {
-        // Case 1: Specific Account selected
-        if (scope.type === 'account' && scope.id) {
+        // Case 1: Specific Account or Portfolio selected
+        if ((scope.type === 'account' || scope.type === 'portfolio') && scope.id) {
           return await api.performance.calculateHistory('account', scope.id);
         }
 
-        // Case 2: All Portfolios or Specific Portfolio (Group) selected
+        // Case 2: All Portfolios or Specific Group selected
         let accounts: Account[] = [];
         try {
           accounts = await api.accounts.getAll();
@@ -61,7 +61,7 @@ export function useMonthlyPerformance({
 
         const activeAccounts = accounts.filter((a) => !a.isArchived);
         const scopedAccounts =
-          (scope.type === 'portfolio' || scope.type === 'group') && scope.id
+          scope.type === 'group' && scope.id
             ? activeAccounts.filter((a) => a.group === scope.id)
             : activeAccounts;
 
@@ -142,7 +142,8 @@ export function useMonthlyPerformance({
     queryFn: async (): Promise<PerformanceResult | null> => {
       if (!benchmarkSymbol || !benchmarkSymbol.trim()) return null;
       try {
-        return await api.performance.calculateHistory('symbol', benchmarkSymbol.trim());
+        // Request history starting from 2000-01-01 to ensure full history is fetched
+        return await api.performance.calculateHistory('symbol', benchmarkSymbol.trim(), '2000-01-01');
       } catch (err) {
         console.warn(`Failed to fetch benchmark history for ${benchmarkSymbol}:`, err);
         return null;
@@ -172,8 +173,8 @@ export function useMonthlyPerformance({
     scope.type === 'account' && scope.label
       ? scope.label
       : (scope.type === 'portfolio' || scope.type === 'group') && scope.label
-      ? `Portfolio: ${scope.label}`
-      : 'All Portfolios';
+        ? `Portfolio: ${scope.label}`
+        : 'All Portfolios';
   const benchmarkName = benchmarkSymbol ? benchmarkSymbol : null;
   const baseCurrency = (settingsQuery.data as any)?.baseCurrency || 'USD';
 

@@ -143,10 +143,12 @@ export function buildMonthlyComparison(
     }
   }
 
-  // Collect all unique years in descending order
+  // Collect all relevant years in descending order
+  // If portfolio data exists, use portfolio years; otherwise fallback to benchmark years
   const allYearsSet = new Set<number>();
-  for (const p of portfolioData) allYearsSet.add(p.year);
-  if (benchmarkData) {
+  if (portfolioData.length > 0) {
+    for (const p of portfolioData) allYearsSet.add(p.year);
+  } else if (benchmarkData) {
     for (const b of benchmarkData) allYearsSet.add(b.year);
   }
   const allYears = Array.from(allYearsSet).sort((a, b) => b - a);

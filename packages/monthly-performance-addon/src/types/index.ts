@@ -29,7 +29,7 @@ export interface YearComparisonData {
 export type MonthlyViewMode = 'portfolio' | 'benchmark' | 'relative';
 
 export interface PortfolioScope {
-  type: 'all' | 'portfolio' | 'account';
+  type: 'all' | 'group' | 'portfolio' | 'account';
   id?: string;
   label?: string;
 }
