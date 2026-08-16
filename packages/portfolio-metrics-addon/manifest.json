@@ -1,0 +1,87 @@
+{
+  "id": "portfolio-metrics",
+  "name": "Portfolio Metrics",
+  "version": "1.0.0",
+  "description": "Analyze and compare fundamental stock metrics (Margins, ROIC, ROCE, ROE, Debt/EBITDA, Interest Coverage, Goodwill, P/E, P/FCF, Quality Score) across accounts and portfolios",
+  "author": "thibaultserti",
+  "main": "dist/addon.js",
+  "sdkVersion": "3.7.0",
+  "minWealthfolioVersion": "3.6.3",
+  "enabled": true,
+  "contributes": {
+    "routes": [{ "id": "portfolio-metrics" }],
+    "links": {
+      "sidebar": [
+        {
+          "id": "portfolio-metrics",
+          "route": "portfolio-metrics",
+          "label": "Portfolio Metrics",
+          "icon": "bar-chart-3",
+          "order": 46
+        }
+      ]
+    }
+  },
+  "hostDependencies": {
+    "@tanstack/react-query": "^5.90.0",
+    "@wealthfolio/addon-sdk": "^3.7.0",
+    "@wealthfolio/ui": "^3.7.0",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.561.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.7.0"
+  },
+  "permissions": [
+    {
+      "category": "portfolio",
+      "purpose": "Access holdings, cost basis, and valuations to calculate weighted portfolio fundamental metrics and ratios on cost",
+      "functions": [
+        { "name": "getHoldings", "isDeclared": true, "isDetected": true },
+        { "name": "getHolding", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "accounts",
+      "purpose": "Filter and compare metrics across portfolios and individual accounts",
+      "functions": [
+        { "name": "getAll", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "market-data",
+      "purpose": "Fetch market data, fundamental metrics and financial statements for portfolio assets",
+      "functions": [
+        { "name": "searchTicker", "isDeclared": true, "isDetected": true },
+        { "name": "sync", "isDeclared": true, "isDetected": true },
+        { "name": "getProviders", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "assets",
+      "purpose": "Access asset profile metadata (exchange MIC, currency, classification) to resolve financial data",
+      "functions": [
+        { "name": "getProfile", "isDeclared": true, "isDetected": true }
+      ]
+    },
+    {
+      "category": "settings",
+      "purpose": "Get user base currency and display preferences",
+      "functions": [
+        { "name": "get", "isDeclared": true, "isDetected": true }
+      ]
+    }
+  ],
+  "keywords": [
+    "wealthfolio",
+    "addon",
+    "metrics",
+    "fundamentals",
+    "valuation",
+    "margins",
+    "roic",
+    "quality-score",
+    "portfolio-comparison"
+  ],
+  "license": "MIT"
+}

@@ -21,3 +21,25 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/dividends-projection-addon"
+    schedule:
+      day: monday
+      interval: weekly
+      time: "08:30"
+      timezone: Europe/Paris
+    commit-message:
+      prefix: "deps(dividends)"
+      include: "scope"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/portfolio-metrics-addon"
+    schedule:
+      day: monday
+      interval: weekly
+      time: "08:30"
+      timezone: Europe/Paris
+    commit-message:
+      prefix: "deps(metrics)"
+      include: "scope"

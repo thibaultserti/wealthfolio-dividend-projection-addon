@@ -9,7 +9,7 @@ on:
 
 jobs:
   check-and-build:
-    name: TypeCheck, Test & Build
+    name: TypeCheck, Test & Build Monorepo
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 9
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -30,18 +30,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Type check
+      - name: Type check (all packages)
         run: pnpm run type-check
 
-      - name: Run unit tests
+      - name: Run unit tests (all packages)
         run: pnpm test
 
-      - name: Package addon
+      - name: Package addons (.zip)
         run: pnpm run package
 
-      - name: Upload artifact
+      - name: Upload Dividends Projection Addon artifact
         uses: actions/upload-artifact@v7
         with:
           name: dividends-projection-addon
-          path: dist/dividends-projection-addon.zip
+          path: packages/dividends-projection-addon/dist/dividends-projection-addon.zip
+          retention-days: 7
+
+      - name: Upload Portfolio Metrics Addon artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: portfolio-metrics-addon
+          path: packages/portfolio-metrics-addon/dist/portfolio-metrics-addon.zip
           retention-days: 7

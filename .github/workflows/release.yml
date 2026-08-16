@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   release:
-    name: Build & Release Addon
+    name: Build & Release Addons
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +20,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 9
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -31,19 +31,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Type check
+      - name: Type check (all packages)
         run: pnpm run type-check
 
-      - name: Run unit tests
+      - name: Run unit tests (all packages)
         run: pnpm test
 
-      - name: Package addon
+      - name: Package all addons (.zip)
         run: pnpm run package
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          files: dist/dividends-projection-addon.zip
+          files: |
+            packages/dividends-projection-addon/dist/dividends-projection-addon.zip
+            packages/portfolio-metrics-addon/dist/portfolio-metrics-addon.zip
           draft: false
           prerelease: false
           generate_release_notes: true

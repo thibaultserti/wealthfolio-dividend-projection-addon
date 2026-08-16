@@ -109,7 +109,7 @@ export const MonthlyProjectionChart: React.FC<MonthlyProjectionChartProps> = ({
               />
               <Tooltip
                 cursor={{ fill: 'rgba(120, 120, 120, 0.12)', radius: 4 }}
-                content={({ active, payload }) => {
+                content={({ active, payload }: any) => {
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
                     return (

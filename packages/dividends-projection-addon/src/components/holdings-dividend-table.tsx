@@ -169,7 +169,7 @@ export const HoldingsDividendTable: React.FC<HoldingsDividendTableProps> = ({
               type="text"
               placeholder="Search ticker or name..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
               className="h-8 pl-8 text-xs bg-background/50"
             />
           </div>

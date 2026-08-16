@@ -1,22 +1,64 @@
-# Dividends Projection Addon for Wealthfolio
+# Wealthfolio Addons (Monorepo)
 
-A Wealthfolio add-on providing interactive forward-looking dividend projections, portfolio dividend yield, yield on cost, multi-year dividend growth analysis (12-month and 5-year CAGR), and monthly income forecasting with source drill-downs.
+Monorepo containing extensions and addons for [Wealthfolio](https://wealthfolio.app).
 
-## Features
+## 📦 Packages
 
-- **Multi-Portfolio & Account Scope**: Seamlessly switch between All Accounts, Account Groups / Portfolios, or Individual Accounts.
-- **KPI Metrics**:
-  - Projected Annual Dividend Income (and monthly average)
-  - Current Portfolio Dividend Yield (%)
-  - Yield on Cost (YoC %)
-  - 12-Month Dividend Growth (%)
-  - 5-Year Compound Annual Dividend Growth (CAGR %)
-  - Dividend Payer Coverage
-- **12-Month Monthly Projection Chart**: Interactive bar chart forecasting payouts for the next 12 rolling months.
-- **Month Drill-Down View**: Click any month to inspect all contributing dividend payments, shares owned, payout amounts, and % contribution.
-- **Holdings Dividend Table**: Comprehensive table breakdown with sortable yields, yield on cost, frequency, payout months, and growth metrics.
+| Addon | Description | Path |
+| :--- | :--- | :--- |
+| **[Dividends Projection](packages/dividends-projection-addon)** | Visualize and project future dividend income, dividend yield, yield on cost, and historical dividend growth across portfolios. | `packages/dividends-projection-addon` |
+| **[Portfolio Metrics](packages/portfolio-metrics-addon)** | Analyze and compare fundamental stock metrics (Margins, ROIC/ROCE/ROE, Debt/EBITDA, Interest Coverage, Goodwill, P/E, P/FCF, Note Q) across portfolios and accounts. | `packages/portfolio-metrics-addon` |
 
-## Overview
+---
 
-![Overview](assets/overview.png)
+## 🚀 Quick Start & Scripts
 
+### Installation
+```bash
+pnpm install
+```
+
+### Development
+```bash
+# Run all addons in watch mode
+pnpm dev
+
+# Or run a specific addon:
+pnpm dev:dividends
+pnpm dev:metrics
+```
+
+### Build & Typecheck
+```bash
+# Build all addons
+pnpm build
+
+# Type check all addons
+pnpm type-check
+pnpm lint
+```
+
+### Tests
+```bash
+# Run vitest across all addons
+pnpm test
+
+# Run tests for a specific addon
+pnpm test:dividends
+pnpm test:metrics
+```
+
+### Package (.zip for Wealthfolio)
+```bash
+# Package all addons into dist/*.zip
+pnpm package
+
+# Or package individual addons:
+pnpm package:dividends
+pnpm package:metrics
+```
+
+---
+
+## 📄 License
+MIT © [thibaultserti](https://github.com/thibaultserti)

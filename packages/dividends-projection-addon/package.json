@@ -1,0 +1,54 @@
+{
+  "name": "wealthfolio-dividend-projection-addon",
+  "version": "1.0.0",
+  "description": "Visualize and project future dividend income, dividend yield, yield on cost, and historical dividend growth across portfolios",
+  "type": "module",
+  "main": "dist/addon.js",
+  "keywords": ["wealthfolio", "addon", "dividends", "projection", "yield", "income"],
+  "license": "MIT",
+  "author": "thibaultserti",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thibaultserti/wealthfolio-addons.git",
+    "directory": "packages/dividends-projection-addon"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "clean": "rm -rf dist",
+    "package": "pnpm build && zip -r dist/dividends-projection-addon.zip manifest.json dist/addon.js README.md",
+    "lint": "tsc --noEmit",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.90.0",
+    "@wealthfolio/addon-sdk": "^3.6.2",
+    "@wealthfolio/ui": "^3.6.2",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.561.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.7.0"
+  },
+  "devDependencies": {
+    "@tanstack/react-query": "^5.90.20",
+    "@tailwindcss/vite": "^4.1.13",
+    "@wealthfolio/addon-dev-tools": "^3.6.2",
+    "@wealthfolio/addon-sdk": "^3.6.2",
+    "@wealthfolio/ui": "^3.6.2",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.2",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.561.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "recharts": "^3.7.0",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.5",
+    "vitest": "^3.2.4"
+  }
+}

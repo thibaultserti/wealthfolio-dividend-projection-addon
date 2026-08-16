@@ -6,7 +6,66 @@ settings:
 
 importers:
 
-  .:
+  .: {}
+
+  packages/dividends-projection-addon:
+    devDependencies:
+      '@tailwindcss/vite':
+        specifier: ^4.1.13
+        version: 4.3.3(vite@7.3.6(@types/node@20.19.43)(jiti@2.7.0)(lightningcss@1.32.0))
+      '@tanstack/react-query':
+        specifier: ^5.90.20
+        version: 5.101.4(react@19.2.8)
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.43
+      '@types/react':
+        specifier: ^19.2.13
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.4(@types/react@19.2.18)
+      '@vitejs/plugin-react':
+        specifier: ^5.0.2
+        version: 5.2.0(vite@7.3.6(@types/node@20.19.43)(jiti@2.7.0)(lightningcss@1.32.0))
+      '@wealthfolio/addon-dev-tools':
+        specifier: ^3.6.2
+        version: 3.6.2
+      '@wealthfolio/addon-sdk':
+        specifier: ^3.6.2
+        version: 3.6.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@wealthfolio/ui':
+        specifier: ^3.6.2
+        version: 3.6.2(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(i18next@25.10.10(typescript@5.9.3))(react-dom@19.2.8(react@19.2.8))(react-i18next@16.6.6(i18next@25.10.10(typescript@5.9.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.9.3))(react-is@16.13.1)(react@19.2.8)(redux@5.0.1)
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.4.0
+      lucide-react:
+        specifier: ^0.561.0
+        version: 0.561.0(react@19.2.8)
+      react:
+        specifier: ^19.2.4
+        version: 19.2.8
+      react-dom:
+        specifier: ^19.2.4
+        version: 19.2.8(react@19.2.8)
+      recharts:
+        specifier: ^3.7.0
+        version: 3.10.1(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react-is@16.13.1)(react@19.2.8)(redux@5.0.1)
+      tailwindcss:
+        specifier: ^4.1.13
+        version: 4.3.3
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vite:
+        specifier: ^7.1.5
+        version: 7.3.6(@types/node@20.19.43)(jiti@2.7.0)(lightningcss@1.32.0)
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@20.19.43)(jiti@2.7.0)(lightningcss@1.32.0)
+
+  packages/portfolio-metrics-addon:
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.1.13
