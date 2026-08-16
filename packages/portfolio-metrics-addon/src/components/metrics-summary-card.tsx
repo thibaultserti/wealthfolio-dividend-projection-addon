@@ -59,6 +59,10 @@ export const MetricsSummaryCard: React.FC<MetricsSummaryCardProps> = ({
               value={fmtNum(general.top5Concentration, ' %', general.top5Concentration % 1 === 0 ? 0 : 2)}
             />
             <StatMetricRow
+              label="Top 10 du portefeuille"
+              value={fmtNum(general.top10Concentration, ' %', general.top10Concentration % 1 === 0 ? 0 : 2)}
+            />
+            <StatMetricRow
               label="Market Cap"
               value={fmtNum(general.weightedMarketCap, ' M$')}
             />

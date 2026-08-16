@@ -348,6 +348,14 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
                     ))}
                   </tr>
                   <tr>
+                    <td className="py-2 px-4 text-muted-foreground">Concentration Top 10</td>
+                    {comparisonMetrics.map((cm, idx) => (
+                      <td key={idx} className="py-2 px-4 text-right font-medium">
+                        {cm.general.top10Concentration}%
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
                     <td className="py-2 px-4 text-muted-foreground">Market Cap moyenne pondérée</td>
                     {comparisonMetrics.map((cm, idx) => (
                       <td key={idx} className="py-2 px-4 text-right font-medium">

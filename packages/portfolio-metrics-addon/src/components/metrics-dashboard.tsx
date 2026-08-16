@@ -201,7 +201,7 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
       ) : (
         <div className="space-y-6">
           {/* Top Key Indicator Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {/* Note Q Card */}
             <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between">
               <div className="flex items-center justify-between">
@@ -267,6 +267,22 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
               <div className="mt-2 flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-extrabold text-foreground">
                   {metrics.general.top5Concentration}%
+                </span>
+              </div>
+              <span className="text-[11px] text-muted-foreground mt-1">
+                sur {metrics.general.stockCount} actions
+              </span>
+            </div>
+
+            {/* Concentration Top 10 */}
+            <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between col-span-2 sm:col-span-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground font-medium">Concentration Top 10</span>
+                <PieChart className="w-4 h-4 text-blue-500" />
+              </div>
+              <div className="mt-2 flex items-baseline gap-1">
+                <span className="text-2xl sm:text-3xl font-extrabold text-foreground">
+                  {metrics.general.top10Concentration}%
                 </span>
               </div>
               <span className="text-[11px] text-muted-foreground mt-1">

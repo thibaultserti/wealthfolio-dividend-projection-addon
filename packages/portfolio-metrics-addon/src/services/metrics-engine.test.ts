@@ -139,6 +139,7 @@ describe('Metrics Engine Tests', () => {
 
     expect(summary.general.stockCount).toBe(2);
     expect(summary.general.top5Concentration).toBe(100);
+    expect(summary.general.top10Concentration).toBe(100);
     expect(summary.totalMarketValue).toBe(4000);
     expect(summary.totalCostBasis).toBe(3000);
 

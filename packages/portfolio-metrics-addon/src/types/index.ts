@@ -92,6 +92,7 @@ export interface PortfolioCategoryMetrics {
   general: {
     stockCount: number;
     top5Concentration: number; // %
+    top10Concentration: number; // %
     weightedMarketCap: number; // in Millions
     qualityScore: number; // Note Q (0-20)
   };
@@ -135,5 +136,6 @@ export interface PortfolioAggregatedMetrics extends PortfolioCategoryMetrics {
   totalUnrealizedGainPct: number;
   holdings: StockHoldingMetric[];
   top5Holdings: StockHoldingMetric[];
+  top10Holdings: StockHoldingMetric[];
   nonStockHoldingsCount: number;
 }

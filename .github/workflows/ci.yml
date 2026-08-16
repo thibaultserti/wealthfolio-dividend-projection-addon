@@ -52,3 +52,10 @@ jobs:
           name: portfolio-metrics-addon
           path: packages/portfolio-metrics-addon/dist/portfolio-metrics-addon.zip
           retention-days: 7
+
+      - name: Upload Monthly Performance Addon artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: monthly-performance-addon
+          path: packages/monthly-performance-addon/dist/monthly-performance-addon.zip
+          retention-days: 7

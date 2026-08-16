@@ -8,6 +8,7 @@ Monorepo containing extensions and addons for [Wealthfolio](https://wealthfolio.
 | :--- | :--- | :--- |
 | **[Dividends Projection](packages/dividends-projection-addon)** | Visualize and project future dividend income, dividend yield, yield on cost, and historical dividend growth across portfolios. | `packages/dividends-projection-addon` |
 | **[Portfolio Metrics](packages/portfolio-metrics-addon)** | Analyze and compare fundamental stock metrics (Margins, ROIC/ROCE/ROE, Debt/EBITDA, Interest Coverage, Goodwill, P/E, P/FCF, Note Q) across portfolios and accounts. | `packages/portfolio-metrics-addon` |
+| **[Monthly Performance](packages/monthly-performance-addon)** | Monthly and annual investment returns breakdown matrix, return distribution bar chart, and benchmark comparison (Alpha). | `packages/monthly-performance-addon` |
 
 ---
 
@@ -26,6 +27,7 @@ pnpm dev
 # Or run a specific addon:
 pnpm dev:dividends
 pnpm dev:metrics
+pnpm dev:performance
 ```
 
 ### Build & Typecheck
@@ -46,6 +48,7 @@ pnpm test
 # Run tests for a specific addon
 pnpm test:dividends
 pnpm test:metrics
+pnpm test:performance
 ```
 
 ### Package (.zip for Wealthfolio)
@@ -56,6 +59,7 @@ pnpm package
 # Or package individual addons:
 pnpm package:dividends
 pnpm package:metrics
+pnpm package:performance
 ```
 
 ---

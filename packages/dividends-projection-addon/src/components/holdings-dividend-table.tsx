@@ -47,6 +47,55 @@ const MONTH_NAMES_SHORT = [
   'Dec',
 ];
 
+// 5-Tier Vibrant Colors (same system as portfolio-metrics-addon)
+const C = {
+  VERY_GOOD: '#22c55e', // Vert foncé / vif (Excellence)
+  GOOD: '#4ade80',      // Vert clair (Bon)
+  AVERAGE: '#f59e0b',   // Orange / Ambre (Moyen)
+  BAD: '#f87171',       // Rouge clair / Rose (Médiocre)
+  VERY_BAD: '#ef4444',  // Rouge vif (Très mauvais)
+  MUTED: '#9ca3af',     // Gris neutre (Non dispo / N/A)
+};
+
+const getDividendYieldColor = (val: number | null | undefined): string => {
+  if (val === null || val === undefined || isNaN(val) || val <= 0) return C.MUTED;
+  if (val >= 5.0) return C.VERY_GOOD;
+  if (val >= 3.5) return C.GOOD;
+  if (val >= 2.0) return C.AVERAGE;
+  if (val >= 1.0) return C.BAD;
+  return C.VERY_BAD;
+};
+
+const getYieldOnCostColor = (
+  yoc: number | null | undefined,
+  divYield?: number | null | undefined
+): string => {
+  if (yoc === null || yoc === undefined || isNaN(yoc) || yoc <= 0) return C.MUTED;
+  if (yoc >= 6.0 || (divYield && divYield > 0 && yoc >= divYield * 1.35)) return C.VERY_GOOD;
+  if (yoc >= 4.0 || (divYield && divYield > 0 && yoc > divYield)) return C.GOOD;
+  if (yoc >= 2.5) return C.AVERAGE;
+  if (yoc >= 1.0) return C.BAD;
+  return C.VERY_BAD;
+};
+
+const getGrowth12MColor = (val: number | null | undefined): string => {
+  if (val === null || val === undefined || isNaN(val)) return C.MUTED;
+  if (val >= 10.0) return C.VERY_GOOD;
+  if (val >= 6.0) return C.GOOD;
+  if (val >= 2.0) return C.AVERAGE;
+  if (val >= 0) return C.BAD;
+  return C.VERY_BAD;
+};
+
+const getGrowth5YColor = (val: number | null | undefined): string => {
+  if (val === null || val === undefined || isNaN(val)) return C.MUTED;
+  if (val >= 10.0) return C.VERY_GOOD;
+  if (val >= 6.0) return C.GOOD;
+  if (val >= 3.0) return C.AVERAGE;
+  if (val >= 0) return C.BAD;
+  return C.VERY_BAD;
+};
+
 export const HoldingsDividendTable: React.FC<HoldingsDividendTableProps> = ({
   holdings,
   baseCurrency,
@@ -130,26 +179,6 @@ export const HoldingsDividendTable: React.FC<HoldingsDividendTableProps> = ({
         return sortAsc ? Number(valA) - Number(valB) : Number(valB) - Number(valA);
       });
   }, [holdings, searchQuery, payersOnly, sortField, sortAsc]);
-
-  const formatGrowth = (val: number | null) => {
-    if (val === null || isNaN(val)) return '—';
-    const isPositive = val > 0;
-    const isNegative = val < 0;
-    return (
-      <span
-        className={`inline-flex items-center text-xs font-medium ${
-          isPositive
-            ? 'text-emerald-600 dark:text-emerald-400'
-            : isNegative
-            ? 'text-red-500'
-            : 'text-muted-foreground'
-        }`}
-      >
-        {isPositive ? '+' : ''}
-        {val.toFixed(1)}%
-      </span>
-    );
-  };
 
   return (
     <Card className="border-border/60 shadow-xs bg-card/60 backdrop-blur-xs">
@@ -297,23 +326,19 @@ export const HoldingsDividendTable: React.FC<HoldingsDividendTableProps> = ({
                     </td>
 
                     {/* Dividend Yield */}
-                    <td className="py-2.5 px-3 text-right">
-                      <span className="font-semibold text-foreground">
-                        {h.dividendYieldPct > 0 ? `${h.dividendYieldPct.toFixed(2)}%` : '—'}
-                      </span>
+                    <td
+                      style={{ color: getDividendYieldColor(h.dividendYieldPct) }}
+                      className="py-2.5 px-3 text-right font-medium"
+                    >
+                      {h.dividendYieldPct > 0 ? `${h.dividendYieldPct.toFixed(2)}%` : '—'}
                     </td>
 
                     {/* Yield on Cost */}
-                    <td className="py-2.5 px-3 text-right">
-                      <span
-                        className={`font-semibold ${
-                          h.yieldOnCostPct > h.dividendYieldPct
-                            ? 'text-emerald-600 dark:text-emerald-400'
-                            : 'text-foreground'
-                        }`}
-                      >
-                        {h.yieldOnCostPct > 0 ? `${h.yieldOnCostPct.toFixed(2)}%` : '—'}
-                      </span>
+                    <td
+                      style={{ color: getYieldOnCostColor(h.yieldOnCostPct, h.dividendYieldPct) }}
+                      className="py-2.5 px-3 text-right font-medium"
+                    >
+                      {h.yieldOnCostPct > 0 ? `${h.yieldOnCostPct.toFixed(2)}%` : '—'}
                     </td>
 
                     {/* Frequency & Schedule */}
@@ -330,13 +355,23 @@ export const HoldingsDividendTable: React.FC<HoldingsDividendTableProps> = ({
                     </td>
 
                     {/* 12M Growth */}
-                    <td className="py-2.5 px-3 text-right">
-                      {formatGrowth(h.growth12MPct)}
+                    <td
+                      style={{ color: getGrowth12MColor(h.growth12MPct) }}
+                      className="py-2.5 px-3 text-right font-medium"
+                    >
+                      {h.growth12MPct === null || isNaN(h.growth12MPct)
+                        ? '—'
+                        : `${h.growth12MPct > 0 ? '+' : ''}${h.growth12MPct.toFixed(1)}%`}
                     </td>
 
                     {/* 5Y CAGR */}
-                    <td className="py-2.5 px-3 text-right">
-                      {formatGrowth(h.growth5YPct)}
+                    <td
+                      style={{ color: getGrowth5YColor(h.growth5YPct) }}
+                      className="py-2.5 px-3 text-right font-medium"
+                    >
+                      {h.growth5YPct === null || isNaN(h.growth5YPct)
+                        ? '—'
+                        : `${h.growth5YPct > 0 ? '+' : ''}${h.growth5YPct.toFixed(1)}%`}
                     </td>
 
                     {/* Income Share */}

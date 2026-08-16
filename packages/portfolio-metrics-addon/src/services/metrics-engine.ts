@@ -419,9 +419,12 @@ export function aggregatePortfolioMetrics({
   // Sort by weight descending
   stockHoldingMetrics.sort((a, b) => b.weight - a.weight);
 
-  // Top 5 Concentration
+  // Top 5 & Top 10 Concentration
   const top5Holdings = stockHoldingMetrics.slice(0, 5);
   const top5Concentration = top5Holdings.reduce((sum, h) => sum + h.weight, 0);
+
+  const top10Holdings = stockHoldingMetrics.slice(0, 10);
+  const top10Concentration = top10Holdings.reduce((sum, h) => sum + h.weight, 0);
 
   // Weighted Averages
   const totalStockMarketValue = stockHoldingMetrics.reduce((sum, h) => sum + h.marketValue, 0);
@@ -470,10 +473,12 @@ export function aggregatePortfolioMetrics({
     totalUnrealizedGainPct,
     holdings: stockHoldingMetrics,
     top5Holdings,
+    top10Holdings,
     nonStockHoldingsCount: nonStockCount,
     general: {
       stockCount: stockHoldingMetrics.length,
       top5Concentration: Math.min(100, Math.round(top5Concentration * 100) / 100),
+      top10Concentration: Math.min(100, Math.round(top10Concentration * 100) / 100),
       weightedMarketCap: Math.round(weightedMarketCap * 10) / 10,
       qualityScore: Math.round(weightedQualityScore * 10) / 10,
     },

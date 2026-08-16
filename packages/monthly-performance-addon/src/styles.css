@@ -1,0 +1,20 @@
+.text-gain,
+.text-success,
+.text-emerald-500,
+.monthly-perf-gain,
+.kpi-perf-gain {
+  color: #22c55e !important;
+}
+
+.text-loss,
+.text-destructive,
+.text-rose-500,
+.monthly-perf-loss,
+.kpi-perf-loss {
+  color: #ef4444 !important;
+}
+
+.monthly-perf-muted {
+  color: #6b7280 !important;
+  opacity: 0.5 !important;
+}
