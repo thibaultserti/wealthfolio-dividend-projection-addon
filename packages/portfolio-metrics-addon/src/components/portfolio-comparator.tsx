@@ -179,7 +179,8 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
 
         let financialsBySymbol: Record<string, RawStockFinancials> = {};
         try {
-          financialsBySymbol = await fetchStockFundamentals({ symbols: candidates, api });
+          const resp = await fetchStockFundamentals({ symbols: candidates, api });
+          financialsBySymbol = resp.financialsBySymbol;
         } catch {
           financialsBySymbol = {};
         }
@@ -486,10 +487,26 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
                     </td>
                   </tr>
                   <tr>
-                    <td className="py-2 px-4 text-muted-foreground">P/E Ratio</td>
+                    <td className="py-2 px-4 text-muted-foreground">P/E Ratio (Actuel)</td>
                     {comparisonMetrics.map((cm, idx) => (
                       <td key={idx} className="py-2 px-4 text-right font-mono font-medium">
                         {fmtNum(cm.valuation.peRatio)}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-4 text-muted-foreground">Forward P/E</td>
+                    {comparisonMetrics.map((cm, idx) => (
+                      <td key={idx} className="py-2 px-4 text-right font-mono font-medium">
+                        {fmtNum(cm.valuation.forwardPE)}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-4 text-muted-foreground">PEG Ratio</td>
+                    {comparisonMetrics.map((cm, idx) => (
+                      <td key={idx} className="py-2 px-4 text-right font-mono font-medium text-emerald-400">
+                        {fmtNum(cm.valuation.pegRatio, '', 2)}
                       </td>
                     ))}
                   </tr>

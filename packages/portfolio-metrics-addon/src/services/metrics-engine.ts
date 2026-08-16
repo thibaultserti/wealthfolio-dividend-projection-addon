@@ -9,64 +9,78 @@ import type {
 /**
  * Identify if a holding is cash
  */
+/**
+ * Identify if a holding is cash or fiat currency
+ */
 export function isCashHolding(holding: Holding): boolean {
   if (holding.holdingType === 'cash') return true;
-  const kind = holding.assetKind || (holding.instrument as unknown as { kind?: string })?.kind;
-  if (kind === 'FX' || kind === 'OTHER') {
-    const symbol = holding.instrument?.symbol?.toUpperCase();
-    if (symbol === 'EUR' || symbol === 'USD' || symbol === 'CAD' || symbol === 'GBP' || symbol === 'CHF') {
-      return true;
-    }
+  const sym = (holding.instrument?.symbol || '').toUpperCase().trim();
+  const id = (holding.instrument?.id || '').toLowerCase().trim();
+  if (id.startsWith('cash:') || sym === '$CASH' || sym.startsWith('CASH-') || sym.startsWith('CASH:')) {
+    return true;
   }
-  const symbol = holding.instrument?.symbol || '';
-  return symbol.startsWith('cash:') || symbol.startsWith('CASH:');
+  const classifications = holding.instrument?.classifications as
+    | { assetType?: { id?: string; key?: string; parentId?: string } }
+    | undefined;
+  const assetTypeId = classifications?.assetType?.id || classifications?.assetType?.key;
+  const assetTypeParent = classifications?.assetType?.parentId;
+  if (assetTypeId === 'CASH' || assetTypeId === 'DEPOSIT' || assetTypeParent === 'CASH_FX') {
+    return true;
+  }
+  const FIAT_CURRENCIES = new Set(['EUR', 'USD', 'GBP', 'CAD', 'CHF', 'JPY', 'AUD', 'NZD', 'SEK', 'NOK', 'DKK', 'PLN', 'SGD', 'HKD']);
+  if (FIAT_CURRENCIES.has(sym) && (id.includes('cash') || holding.instrument?.quoteMode === 'MANUAL')) {
+    return true;
+  }
+  return false;
 }
 
 /**
  * Identify if a holding is an ETF, Index Fund, or Crypto (to isolate Individual Stocks)
  */
 export function isEtfOrFund(holding: Holding, assetProfile?: Asset): boolean {
-  const instrumentType =
-    assetProfile?.instrumentType ||
-    (holding.instrument as unknown as { instrumentType?: string })?.instrumentType;
+  if (isCashHolding(holding)) return true;
+  const classifications = holding.instrument?.classifications as
+    | { assetType?: { id?: string; key?: string; parentId?: string } }
+    | undefined;
+  const assetTypeId = classifications?.assetType?.id || classifications?.assetType?.key;
+  const assetTypeParent = classifications?.assetType?.parentId;
 
-  if (instrumentType) {
-    const upper = instrumentType.toUpperCase();
-    if (upper.includes('ETF') || upper.includes('MUTUAL') || upper.includes('FUND') || upper.includes('CRYPTO')) {
-      return true;
-    }
-  }
-
-  const name = (holding.instrument?.name || assetProfile?.name || '').toLowerCase();
-  const symbol = (holding.instrument?.symbol || '').toUpperCase();
-
-  const etfIndicators = [
-    'etf',
-    'ucits',
-    'ishares',
-    'vanguard',
-    'spdr',
-    'amundi',
-    'lyxor',
-    'invesco',
-    'xtrackers',
-    'msci',
-    's&p 500',
-    'nasdaq 100',
-    'russell',
-    'index fund',
-    'core msci',
-    'cac 40 etf',
-    'dax etf',
-  ];
-
-  if (etfIndicators.some((ind) => name.includes(ind))) {
+  if (
+    assetTypeId === 'ETF' ||
+    assetTypeId === 'ETN' ||
+    assetTypeId === 'ETC' ||
+    assetTypeId === 'FUND_MUTUAL' ||
+    assetTypeId === 'FUND_CLOSED_END' ||
+    assetTypeParent === 'ETP' ||
+    assetTypeParent === 'FUND'
+  ) {
     return true;
   }
 
-  // Common Crypto symbols
-  const cryptoSymbols = ['BTC', 'ETH', 'SOL', 'ADA', 'XRP', 'DOT', 'AVAX', 'MATIC', 'LINK', 'BNB'];
-  if (cryptoSymbols.includes(symbol)) {
+  const metaProfile = ((holding as unknown as { metadata?: { profile?: { quoteType?: string } } }).metadata)?.profile;
+  const quoteType =
+    metaProfile?.quoteType?.toUpperCase() ||
+    (assetProfile as unknown as { quoteType?: string })?.quoteType?.toUpperCase();
+  if (quoteType === 'ETF' || quoteType === 'MUTUALFUND' || quoteType === 'INDEX') {
+    return true;
+  }
+
+  const name = (holding.instrument?.name || assetProfile?.name || '').toUpperCase();
+  if (
+    name.includes(' ETF') ||
+    name.startsWith('ETF ') ||
+    name.includes('UCITS') ||
+    name.includes('ISHARES') ||
+    name.includes('VANGUARD') ||
+    name.includes('AMUNDI') ||
+    name.includes('LYXOR') ||
+    name.includes('XTRACKERS') ||
+    name.includes('SPDR') ||
+    name.includes('WISDOMTREE') ||
+    name.includes('MSCI WORLD') ||
+    name.includes('S&P 500 ETF') ||
+    name.includes('CAC 40 ETF')
+  ) {
     return true;
   }
 
@@ -348,9 +362,15 @@ export function aggregatePortfolioMetrics({
 
     // Valuation
     const peRatio = fin.trailingPE || fin.forwardPE || null;
+    const forwardPE = fin.forwardPE || (peRatio ? peRatio * 0.92 : null);
     // P/E on Cost Basis = Current PE * (Cost Basis / Market Value)
     const costRatio = mVal > 0 && cBasis > 0 ? cBasis / mVal : 1;
     const peOnCost = peRatio != null ? peRatio * costRatio : null;
+
+    let pegRatio = fin.pegRatio ?? null;
+    if (pegRatio == null && epsGrowth && epsGrowth > 0 && peRatio) {
+      pegRatio = Math.round((peRatio / epsGrowth) * 100) / 100;
+    }
 
     const pfcfRatio = fin.priceToFreeCashFlow ?? (peRatio != null ? peRatio * 1.15 : null);
     const pfcfOnCost = pfcfRatio != null ? pfcfRatio * costRatio : null;
@@ -387,7 +407,9 @@ export function aggregatePortfolioMetrics({
       interestCoverage,
       goodwillToAssets,
       peRatio,
+      forwardPE,
       peOnCost,
+      pegRatio,
       pfcfRatio,
       pfcfOnCost,
       evToEbitda,
@@ -429,7 +451,9 @@ export function aggregatePortfolioMetrics({
   const weightedGoodwillToAssets = calculateWeightedAverage(itemsWithWeight((h) => h.goodwillToAssets));
 
   const weightedPeRatio = calculateWeightedAverage(itemsWithWeight((h) => h.peRatio));
+  const weightedForwardPe = calculateWeightedAverage(itemsWithWeight((h) => h.forwardPE));
   const weightedPeOnCost = calculateWeightedAverage(itemsWithWeight((h) => h.peOnCost));
+  const weightedPegRatio = calculateWeightedAverage(itemsWithWeight((h) => h.pegRatio));
   const weightedPfcfRatio = calculateWeightedAverage(itemsWithWeight((h) => h.pfcfRatio));
   const weightedPfcfOnCost = calculateWeightedAverage(itemsWithWeight((h) => h.pfcfOnCost));
   const weightedEvToEbitda = calculateWeightedAverage(itemsWithWeight((h) => h.evToEbitda));
@@ -475,7 +499,9 @@ export function aggregatePortfolioMetrics({
     },
     valuation: {
       peRatio: weightedPeRatio != null ? Math.round(weightedPeRatio * 100) / 100 : null,
+      forwardPE: weightedForwardPe != null ? Math.round(weightedForwardPe * 100) / 100 : null,
       peOnCost: weightedPeOnCost != null ? Math.round(weightedPeOnCost * 100) / 100 : null,
+      pegRatio: weightedPegRatio != null ? Math.round(weightedPegRatio * 100) / 100 : null,
       pfcfRatio: weightedPfcfRatio != null ? Math.round(weightedPfcfRatio * 100) / 100 : null,
       pfcfOnCost: weightedPfcfOnCost != null ? Math.round(weightedPfcfOnCost * 100) / 100 : null,
       evToEbitda: weightedEvToEbitda != null ? Math.round(weightedEvToEbitda * 100) / 100 : null,

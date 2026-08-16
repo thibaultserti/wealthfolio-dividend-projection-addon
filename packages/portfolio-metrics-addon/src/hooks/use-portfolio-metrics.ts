@@ -124,25 +124,44 @@ export function usePortfolioMetrics({
         });
       }
 
-      // 6. Fetch fundamentals
+      // 6. Fetch fundamentals from imported CSV storage
       let financialsBySymbol: Record<string, RawStockFinancials> = {};
+      let importedCount = 0;
+      let lastImportedAt: number | null = null;
+
       try {
-        financialsBySymbol = await fetchStockFundamentals({
+        const resp = await fetchStockFundamentals({
           symbols: candidates,
           api,
         });
+        financialsBySymbol = resp.financialsBySymbol;
+        importedCount = resp.importedCount;
+        lastImportedAt = resp.lastImportedAt;
       } catch {
         financialsBySymbol = {};
       }
 
       // 7. Compute aggregate metrics
-      return aggregatePortfolioMetrics({
+      const aggregated = aggregatePortfolioMetrics({
         holdings: mergedHoldings,
         financialsBySymbol,
         assetProfilesById,
         scope,
         baseCurrency,
       });
+
+      const portfolioTickers = candidates.map((c) => c.primaryTicker);
+
+      return {
+        ...aggregated,
+        importedCount,
+        lastImportedAt,
+        portfolioTickers,
+      } as PortfolioAggregatedMetrics & {
+        importedCount: number;
+        lastImportedAt: number | null;
+        portfolioTickers: string[];
+      };
     },
     staleTime: 300_000,
   });

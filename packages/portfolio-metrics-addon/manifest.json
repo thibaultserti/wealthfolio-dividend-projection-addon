@@ -1,15 +1,19 @@
 {
   "id": "portfolio-metrics",
   "name": "Portfolio Metrics",
-  "version": "1.0.0",
-  "description": "Analyze and compare fundamental stock metrics (Margins, ROIC, ROCE, ROE, Debt/EBITDA, Interest Coverage, Goodwill, P/E, P/FCF, Quality Score) across accounts and portfolios",
+  "version": "1.0.1",
+  "description": "Analyze fundamental stock metrics (Operating Margins, Net Margins, ROIC, ROCE, ROE, Debt/EBITDA, P/E, Forward P/E, PEG, Quality Score) across accounts and portfolios via CSV import",
   "author": "thibaultserti",
   "main": "dist/addon.js",
   "sdkVersion": "3.7.0",
   "minWealthfolioVersion": "3.6.3",
   "enabled": true,
   "contributes": {
-    "routes": [{ "id": "portfolio-metrics" }],
+    "routes": [
+      {
+        "id": "portfolio-metrics"
+      }
+    ],
     "links": {
       "sidebar": [
         {
@@ -37,38 +41,60 @@
       "category": "portfolio",
       "purpose": "Access holdings, cost basis, and valuations to calculate weighted portfolio fundamental metrics and ratios on cost",
       "functions": [
-        { "name": "getHoldings", "isDeclared": true, "isDetected": true },
-        { "name": "getHolding", "isDeclared": true, "isDetected": true }
+        {
+          "name": "getHoldings",
+          "isDeclared": true,
+          "isDetected": true
+        }
       ]
     },
     {
       "category": "accounts",
       "purpose": "Filter and compare metrics across portfolios and individual accounts",
       "functions": [
-        { "name": "getAll", "isDeclared": true, "isDetected": true }
-      ]
-    },
-    {
-      "category": "market-data",
-      "purpose": "Fetch market data, fundamental metrics and financial statements for portfolio assets",
-      "functions": [
-        { "name": "searchTicker", "isDeclared": true, "isDetected": true },
-        { "name": "sync", "isDeclared": true, "isDetected": true },
-        { "name": "getProviders", "isDeclared": true, "isDetected": true }
+        {
+          "name": "getAll",
+          "isDeclared": true,
+          "isDetected": true
+        }
       ]
     },
     {
       "category": "assets",
-      "purpose": "Access asset profile metadata (exchange MIC, currency, classification) to resolve financial data",
+      "purpose": "Access asset profile metadata (exchange MIC, currency, classification) to resolve holdings data",
       "functions": [
-        { "name": "getProfile", "isDeclared": true, "isDetected": true }
+        {
+          "name": "getProfile",
+          "isDeclared": true,
+          "isDetected": true
+        }
+      ]
+    },
+    {
+      "category": "storage",
+      "purpose": "Persist imported CSV stock fundamentals across sessions",
+      "functions": [
+        {
+          "name": "get",
+          "isDeclared": true,
+          "isDetected": true
+        },
+        {
+          "name": "set",
+          "isDeclared": true,
+          "isDetected": true
+        }
       ]
     },
     {
       "category": "settings",
       "purpose": "Get user base currency and display preferences",
       "functions": [
-        { "name": "get", "isDeclared": true, "isDetected": true }
+        {
+          "name": "get",
+          "isDeclared": true,
+          "isDetected": true
+        }
       ]
     }
   ],

@@ -23,6 +23,7 @@ export interface RawStockFinancials {
   fcfGrowth?: number;
   trailingPE?: number;
   forwardPE?: number;
+  pegRatio?: number;
   priceToBook?: number;
   priceToSales?: number;
   enterpriseToEbitda?: number;
@@ -79,7 +80,9 @@ export interface StockHoldingMetric {
 
   // Valuation
   peRatio: number | null;
+  forwardPE: number | null;
   peOnCost: number | null;
+  pegRatio: number | null;
   pfcfRatio: number | null;
   pfcfOnCost: number | null;
   evToEbitda: number | null;
@@ -114,7 +117,9 @@ export interface PortfolioCategoryMetrics {
   };
   valuation: {
     peRatio: number | null;
+    forwardPE: number | null;
     peOnCost: number | null;
+    pegRatio: number | null;
     pfcfRatio: number | null;
     pfcfOnCost: number | null;
     evToEbitda: number | null;

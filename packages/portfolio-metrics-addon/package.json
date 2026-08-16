@@ -1,6 +1,6 @@
 {
   "name": "wealthfolio-portfolio-metrics-addon",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Analyze fundamental stock metrics (Margins, ROIC, ROCE, ROE, Debt/EBITDA, Interest Coverage, Goodwill, P/E, P/FCF, Quality Score) and compare portfolios",
   "type": "module",
   "main": "dist/addon.js",
