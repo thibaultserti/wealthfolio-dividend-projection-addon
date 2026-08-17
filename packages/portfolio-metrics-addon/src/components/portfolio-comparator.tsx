@@ -50,9 +50,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
   );
 
   // Default selected scopes for comparison (e.g. groups if present, or first two accounts)
-  const defaultScopes: AccountScope[] = groups.length >= 2
-    ? groups.slice(0, 2).map((g) => ({ type: 'group', id: g, label: g }))
-    : activeAccounts.slice(0, 2).map((a) => ({ type: 'account', id: a.id, label: a.name }));
+  const defaultScopes: AccountScope[] =
+    groups.length >= 2
+      ? groups.slice(0, 2).map((g) => ({ type: 'group', id: g, label: g }))
+      : activeAccounts.slice(0, 2).map((a) => ({ type: 'account', id: a.id, label: a.name }));
 
   const [selectedScopes, setSelectedScopes] = useState<AccountScope[]>(
     defaultScopes.length > 0 ? defaultScopes : [{ type: 'all', label: 'Tous les comptes' }],
@@ -61,14 +62,19 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
   // Toggle a scope in comparison
   const toggleScope = (scope: AccountScope) => {
     const exists = selectedScopes.some(
-      (s) => s.type === scope.type && (s.id === scope.id || (s.type === 'all' && scope.type === 'all')),
+      (s) =>
+        s.type === scope.type && (s.id === scope.id || (s.type === 'all' && scope.type === 'all')),
     );
 
     if (exists) {
       if (selectedScopes.length > 1) {
         setSelectedScopes(
           selectedScopes.filter(
-            (s) => !(s.type === scope.type && (s.id === scope.id || (s.type === 'all' && scope.type === 'all'))),
+            (s) =>
+              !(
+                s.type === scope.type &&
+                (s.id === scope.id || (s.type === 'all' && scope.type === 'all'))
+              ),
           ),
         );
       }
@@ -81,7 +87,8 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
 
   const isScopeSelected = (scope: AccountScope) =>
     selectedScopes.some(
-      (s) => s.type === scope.type && (s.id === scope.id || (s.type === 'all' && scope.type === 'all')),
+      (s) =>
+        s.type === scope.type && (s.id === scope.id || (s.type === 'all' && scope.type === 'all')),
     );
 
   // 2. Fetch metrics for all selected scopes
@@ -118,12 +125,16 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
           if (existing) {
             existing.quantity = (Number(existing.quantity) || 0) + (Number(h.quantity) || 0);
             if (existing.marketValue && h.marketValue) {
-              existing.marketValue.local = (Number(existing.marketValue.local) || 0) + (Number(h.marketValue.local) || 0);
-              existing.marketValue.base = (Number(existing.marketValue.base) || 0) + (Number(h.marketValue.base) || 0);
+              existing.marketValue.local =
+                (Number(existing.marketValue.local) || 0) + (Number(h.marketValue.local) || 0);
+              existing.marketValue.base =
+                (Number(existing.marketValue.base) || 0) + (Number(h.marketValue.base) || 0);
             }
             if (existing.costBasis && h.costBasis) {
-              existing.costBasis.local = (Number(existing.costBasis.local) || 0) + (Number(h.costBasis.local) || 0);
-              existing.costBasis.base = (Number(existing.costBasis.base) || 0) + (Number(h.costBasis.base) || 0);
+              existing.costBasis.local =
+                (Number(existing.costBasis.local) || 0) + (Number(h.costBasis.local) || 0);
+              existing.costBasis.base =
+                (Number(existing.costBasis.base) || 0) + (Number(h.costBasis.base) || 0);
             }
           } else {
             mergedHoldingsMap.set(key, {
@@ -157,7 +168,8 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
           }),
         );
 
-        const candidates: { symbol: string; primaryTicker: string; fallbackTickers: string[] }[] = [];
+        const candidates: { symbol: string; primaryTicker: string; fallbackTickers: string[] }[] =
+          [];
         for (const h of mergedHoldings) {
           const rawSymbol = h.instrument?.symbol;
           if (!rawSymbol) continue;
@@ -309,7 +321,8 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
                     <th className="py-3 px-4 text-left w-1/3">Métrique</th>
                     {comparisonMetrics.map((cm, idx) => (
                       <th key={idx} className="py-3 px-4 text-right font-bold text-foreground">
-                        {cm.scope.label || (cm.scope.type === 'all' ? 'Tous les comptes' : cm.scope.id)}
+                        {cm.scope.label ||
+                          (cm.scope.type === 'all' ? 'Tous les comptes' : cm.scope.id)}
                       </th>
                     ))}
                   </tr>
@@ -317,7 +330,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
                 <tbody className="divide-y divide-border/40">
                   {/* Général */}
                   <tr className="bg-muted/20 font-semibold text-foreground/80">
-                    <td colSpan={comparisonMetrics.length + 1} className="py-2 px-4 uppercase text-[10px] tracking-wider">
+                    <td
+                      colSpan={comparisonMetrics.length + 1}
+                      className="py-2 px-4 uppercase text-[10px] tracking-wider"
+                    >
                       Général
                     </td>
                   </tr>
@@ -366,7 +382,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
 
                   {/* Marges */}
                   <tr className="bg-muted/20 font-semibold text-foreground/80">
-                    <td colSpan={comparisonMetrics.length + 1} className="py-2 px-4 uppercase text-[10px] tracking-wider">
+                    <td
+                      colSpan={comparisonMetrics.length + 1}
+                      className="py-2 px-4 uppercase text-[10px] tracking-wider"
+                    >
                       Marges
                     </td>
                   </tr>
@@ -397,7 +416,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
 
                   {/* Retours sur capitaux */}
                   <tr className="bg-muted/20 font-semibold text-foreground/80">
-                    <td colSpan={comparisonMetrics.length + 1} className="py-2 px-4 uppercase text-[10px] tracking-wider">
+                    <td
+                      colSpan={comparisonMetrics.length + 1}
+                      className="py-2 px-4 uppercase text-[10px] tracking-wider"
+                    >
                       Retours sur capitaux
                     </td>
                   </tr>
@@ -428,7 +450,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
 
                   {/* Croissance */}
                   <tr className="bg-muted/20 font-semibold text-foreground/80">
-                    <td colSpan={comparisonMetrics.length + 1} className="py-2 px-4 uppercase text-[10px] tracking-wider">
+                    <td
+                      colSpan={comparisonMetrics.length + 1}
+                      className="py-2 px-4 uppercase text-[10px] tracking-wider"
+                    >
                       Croissance
                     </td>
                   </tr>
@@ -459,7 +484,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
 
                   {/* Santé */}
                   <tr className="bg-muted/20 font-semibold text-foreground/80">
-                    <td colSpan={comparisonMetrics.length + 1} className="py-2 px-4 uppercase text-[10px] tracking-wider">
+                    <td
+                      colSpan={comparisonMetrics.length + 1}
+                      className="py-2 px-4 uppercase text-[10px] tracking-wider"
+                    >
                       Santé financière
                     </td>
                   </tr>
@@ -490,7 +518,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
 
                   {/* Valorisation */}
                   <tr className="bg-muted/20 font-semibold text-foreground/80">
-                    <td colSpan={comparisonMetrics.length + 1} className="py-2 px-4 uppercase text-[10px] tracking-wider">
+                    <td
+                      colSpan={comparisonMetrics.length + 1}
+                      className="py-2 px-4 uppercase text-[10px] tracking-wider"
+                    >
                       Valorisation
                     </td>
                   </tr>
@@ -513,7 +544,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
                   <tr>
                     <td className="py-2 px-4 text-muted-foreground">PEG Ratio</td>
                     {comparisonMetrics.map((cm, idx) => (
-                      <td key={idx} className="py-2 px-4 text-right font-mono font-medium text-emerald-400">
+                      <td
+                        key={idx}
+                        className="py-2 px-4 text-right font-mono font-medium text-emerald-400"
+                      >
                         {fmtNum(cm.valuation.pegRatio, '', 2)}
                       </td>
                     ))}
@@ -521,7 +555,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
                   <tr>
                     <td className="py-2 px-4 text-muted-foreground">P/E sur coût</td>
                     {comparisonMetrics.map((cm, idx) => (
-                      <td key={idx} className="py-2 px-4 text-right font-mono font-medium text-emerald-500">
+                      <td
+                        key={idx}
+                        className="py-2 px-4 text-right font-mono font-medium text-emerald-500"
+                      >
                         {fmtNum(cm.valuation.peOnCost)}
                       </td>
                     ))}
@@ -537,7 +574,10 @@ export const PortfolioComparator: React.FC<PortfolioComparatorProps> = ({ api })
                   <tr>
                     <td className="py-2 px-4 text-muted-foreground">P/FCF sur coût</td>
                     {comparisonMetrics.map((cm, idx) => (
-                      <td key={idx} className="py-2 px-4 text-right font-mono font-medium text-emerald-500">
+                      <td
+                        key={idx}
+                        className="py-2 px-4 text-right font-mono font-medium text-emerald-500"
+                      >
                         {fmtNum(cm.valuation.pfcfOnCost)}
                       </td>
                     ))}

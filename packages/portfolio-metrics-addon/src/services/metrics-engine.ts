@@ -16,19 +16,41 @@ export function isCashHolding(holding: Holding): boolean {
   if (holding.holdingType === 'cash') return true;
   const sym = (holding.instrument?.symbol || '').toUpperCase().trim();
   const id = (holding.instrument?.id || '').toLowerCase().trim();
-  if (id.startsWith('cash:') || sym === '$CASH' || sym.startsWith('CASH-') || sym.startsWith('CASH:')) {
+  if (
+    id.startsWith('cash:') ||
+    sym === '$CASH' ||
+    sym.startsWith('CASH-') ||
+    sym.startsWith('CASH:')
+  ) {
     return true;
   }
   const classifications = holding.instrument?.classifications as
-    | { assetType?: { id?: string; key?: string; parentId?: string } }
-    | undefined;
+    { assetType?: { id?: string; key?: string; parentId?: string } } | undefined;
   const assetTypeId = classifications?.assetType?.id || classifications?.assetType?.key;
   const assetTypeParent = classifications?.assetType?.parentId;
   if (assetTypeId === 'CASH' || assetTypeId === 'DEPOSIT' || assetTypeParent === 'CASH_FX') {
     return true;
   }
-  const FIAT_CURRENCIES = new Set(['EUR', 'USD', 'GBP', 'CAD', 'CHF', 'JPY', 'AUD', 'NZD', 'SEK', 'NOK', 'DKK', 'PLN', 'SGD', 'HKD']);
-  if (FIAT_CURRENCIES.has(sym) && (id.includes('cash') || holding.instrument?.quoteMode === 'MANUAL')) {
+  const FIAT_CURRENCIES = new Set([
+    'EUR',
+    'USD',
+    'GBP',
+    'CAD',
+    'CHF',
+    'JPY',
+    'AUD',
+    'NZD',
+    'SEK',
+    'NOK',
+    'DKK',
+    'PLN',
+    'SGD',
+    'HKD',
+  ]);
+  if (
+    FIAT_CURRENCIES.has(sym) &&
+    (id.includes('cash') || holding.instrument?.quoteMode === 'MANUAL')
+  ) {
     return true;
   }
   return false;
@@ -40,8 +62,7 @@ export function isCashHolding(holding: Holding): boolean {
 export function isEtfOrFund(holding: Holding, assetProfile?: Asset): boolean {
   if (isCashHolding(holding)) return true;
   const classifications = holding.instrument?.classifications as
-    | { assetType?: { id?: string; key?: string; parentId?: string } }
-    | undefined;
+    { assetType?: { id?: string; key?: string; parentId?: string } } | undefined;
   const assetTypeId = classifications?.assetType?.id || classifications?.assetType?.key;
   const assetTypeParent = classifications?.assetType?.parentId;
 
@@ -57,7 +78,8 @@ export function isEtfOrFund(holding: Holding, assetProfile?: Asset): boolean {
     return true;
   }
 
-  const metaProfile = ((holding as unknown as { metadata?: { profile?: { quoteType?: string } } }).metadata)?.profile;
+  const metaProfile = (holding as unknown as { metadata?: { profile?: { quoteType?: string } } })
+    .metadata?.profile;
   const quoteType =
     metaProfile?.quoteType?.toUpperCase() ||
     (assetProfile as unknown as { quoteType?: string })?.quoteType?.toUpperCase();
@@ -109,28 +131,60 @@ export function resolveCandidateTickers(
   const ccy = (currency || '').toUpperCase();
 
   if (mic === 'XPAR' || (ccy === 'EUR' && (!mic || mic === 'PAR' || mic === 'ENX'))) {
-    return { primaryTicker: `${cleanSymbol}.PA`, fallbackTickers: [cleanSymbol], effectiveMic: 'XPAR' };
+    return {
+      primaryTicker: `${cleanSymbol}.PA`,
+      fallbackTickers: [cleanSymbol],
+      effectiveMic: 'XPAR',
+    };
   }
   if (mic === 'XAMS' || (ccy === 'EUR' && mic === 'AMS')) {
-    return { primaryTicker: `${cleanSymbol}.AS`, fallbackTickers: [`${cleanSymbol}.PA`, cleanSymbol], effectiveMic: 'XAMS' };
+    return {
+      primaryTicker: `${cleanSymbol}.AS`,
+      fallbackTickers: [`${cleanSymbol}.PA`, cleanSymbol],
+      effectiveMic: 'XAMS',
+    };
   }
   if (mic === 'XBRU' || (ccy === 'EUR' && mic === 'BRU')) {
-    return { primaryTicker: `${cleanSymbol}.BR`, fallbackTickers: [`${cleanSymbol}.PA`, cleanSymbol], effectiveMic: 'XBRU' };
+    return {
+      primaryTicker: `${cleanSymbol}.BR`,
+      fallbackTickers: [`${cleanSymbol}.PA`, cleanSymbol],
+      effectiveMic: 'XBRU',
+    };
   }
   if (mic === 'XETR' || mic === 'XFRA' || mic === 'FRA') {
-    return { primaryTicker: `${cleanSymbol}.DE`, fallbackTickers: [`${cleanSymbol}.F`, cleanSymbol], effectiveMic: 'XETR' };
+    return {
+      primaryTicker: `${cleanSymbol}.DE`,
+      fallbackTickers: [`${cleanSymbol}.F`, cleanSymbol],
+      effectiveMic: 'XETR',
+    };
   }
   if (mic === 'XMIL' || mic === 'MTAA') {
-    return { primaryTicker: `${cleanSymbol}.MI`, fallbackTickers: [cleanSymbol], effectiveMic: 'XMIL' };
+    return {
+      primaryTicker: `${cleanSymbol}.MI`,
+      fallbackTickers: [cleanSymbol],
+      effectiveMic: 'XMIL',
+    };
   }
   if (mic === 'XMAD' || mic === 'MCE') {
-    return { primaryTicker: `${cleanSymbol}.MC`, fallbackTickers: [cleanSymbol], effectiveMic: 'XMAD' };
+    return {
+      primaryTicker: `${cleanSymbol}.MC`,
+      fallbackTickers: [cleanSymbol],
+      effectiveMic: 'XMAD',
+    };
   }
   if (mic === 'XLON' || ccy === 'GBP') {
-    return { primaryTicker: `${cleanSymbol}.L`, fallbackTickers: [cleanSymbol], effectiveMic: 'XLON' };
+    return {
+      primaryTicker: `${cleanSymbol}.L`,
+      fallbackTickers: [cleanSymbol],
+      effectiveMic: 'XLON',
+    };
   }
   if (mic === 'XTSE' || mic === 'XTSX' || ccy === 'CAD') {
-    return { primaryTicker: `${cleanSymbol}.TO`, fallbackTickers: [`${cleanSymbol}.V`, cleanSymbol], effectiveMic: 'XTSE' };
+    return {
+      primaryTicker: `${cleanSymbol}.TO`,
+      fallbackTickers: [`${cleanSymbol}.V`, cleanSymbol],
+      effectiveMic: 'XTSE',
+    };
   }
 
   return {
@@ -168,7 +222,8 @@ export function calculateQualityScore(financials: Partial<RawStockFinancials>): 
   }
 
   // 2. Retours sur capitaux (Max 5 points)
-  const roic = financials.roic ?? (financials.returnOnAssets ? financials.returnOnAssets * 200 : null);
+  const roic =
+    financials.roic ?? (financials.returnOnAssets ? financials.returnOnAssets * 200 : null);
   const roe = financials.returnOnEquity ? financials.returnOnEquity * 100 : null;
   const roce = financials.roce ?? (roic ? roic * 0.95 : null);
 
@@ -288,7 +343,9 @@ export function aggregatePortfolioMetrics({
   baseCurrency?: string;
 }): PortfolioAggregatedMetrics {
   // Filter out cash
-  const nonCashHoldings = holdings.filter((h) => !isCashHolding(h) && (Number(h.quantity) || 0) > 0);
+  const nonCashHoldings = holdings.filter(
+    (h) => !isCashHolding(h) && (Number(h.quantity) || 0) > 0,
+  );
 
   // Total portfolio market value and cost basis
   const totalPortfolioMarketValue = nonCashHoldings.reduce(
@@ -312,7 +369,8 @@ export function aggregatePortfolioMetrics({
     const cBasis = Number(h.costBasis?.base ?? h.costBasis?.local) || mVal;
     const shares = Number(h.quantity) || 0;
     const price = Number(h.price) || (shares > 0 ? mVal / shares : 0);
-    const unGain = Number(h.unrealizedGain?.base ?? h.unrealizedGain?.local) ?? (mVal - cBasis);
+    const rawUnGain = h.unrealizedGain?.base ?? h.unrealizedGain?.local;
+    const unGain = rawUnGain != null ? Number(rawUnGain) : mVal - cBasis;
     const unGainPct = cBasis > 0 ? ((mVal - cBasis) / cBasis) * 100 : 0;
 
     totalCostBasis += cBasis;
@@ -346,14 +404,16 @@ export function aggregatePortfolioMetrics({
     const netMargin = fin.profitMargins != null ? fin.profitMargins * 100 : null;
 
     // Returns on Capital (in %)
-    const roic = fin.roic != null ? fin.roic : (fin.returnOnAssets != null ? fin.returnOnAssets * 200 : null);
-    const roce = fin.roce != null ? fin.roce : (roic != null ? roic * 0.95 : null);
+    const roic =
+      fin.roic != null ? fin.roic : fin.returnOnAssets != null ? fin.returnOnAssets * 200 : null;
+    const roce = fin.roce != null ? fin.roce : roic != null ? roic * 0.95 : null;
     const roe = fin.returnOnEquity != null ? fin.returnOnEquity * 100 : null;
 
     // Growth (in %)
     const revenueGrowth = fin.revenueGrowth != null ? fin.revenueGrowth * 100 : null;
     const epsGrowth = fin.earningsGrowth != null ? fin.earningsGrowth * 100 : null;
-    const fcfGrowth = fin.fcfGrowth != null ? fin.fcfGrowth : (epsGrowth != null ? epsGrowth * 0.8 : null);
+    const fcfGrowth =
+      fin.fcfGrowth != null ? fin.fcfGrowth : epsGrowth != null ? epsGrowth * 0.8 : null;
 
     // Financial Health
     const netDebtToEbitda = fin.netDebtToEbitda ?? null;
@@ -435,10 +495,13 @@ export function aggregatePortfolioMetrics({
     }));
 
   const weightedMarketCap = calculateWeightedAverage(itemsWithWeight((h) => h.marketCap)) || 0;
-  const weightedQualityScore = calculateWeightedAverage(itemsWithWeight((h) => h.qualityScore)) || 0;
+  const weightedQualityScore =
+    calculateWeightedAverage(itemsWithWeight((h) => h.qualityScore)) || 0;
 
   const weightedGrossMargin = calculateWeightedAverage(itemsWithWeight((h) => h.grossMargin));
-  const weightedOperatingMargin = calculateWeightedAverage(itemsWithWeight((h) => h.operatingMargin));
+  const weightedOperatingMargin = calculateWeightedAverage(
+    itemsWithWeight((h) => h.operatingMargin),
+  );
   const weightedNetMargin = calculateWeightedAverage(itemsWithWeight((h) => h.netMargin));
 
   const weightedRoic = calculateWeightedAverage(itemsWithWeight((h) => h.roic));
@@ -449,9 +512,15 @@ export function aggregatePortfolioMetrics({
   const weightedEpsGrowth = calculateWeightedAverage(itemsWithWeight((h) => h.epsGrowth));
   const weightedFcfGrowth = calculateWeightedAverage(itemsWithWeight((h) => h.fcfGrowth));
 
-  const weightedNetDebtToEbitda = calculateWeightedAverage(itemsWithWeight((h) => h.netDebtToEbitda));
-  const weightedInterestCoverage = calculateWeightedAverage(itemsWithWeight((h) => h.interestCoverage));
-  const weightedGoodwillToAssets = calculateWeightedAverage(itemsWithWeight((h) => h.goodwillToAssets));
+  const weightedNetDebtToEbitda = calculateWeightedAverage(
+    itemsWithWeight((h) => h.netDebtToEbitda),
+  );
+  const weightedInterestCoverage = calculateWeightedAverage(
+    itemsWithWeight((h) => h.interestCoverage),
+  );
+  const weightedGoodwillToAssets = calculateWeightedAverage(
+    itemsWithWeight((h) => h.goodwillToAssets),
+  );
 
   const weightedPeRatio = calculateWeightedAverage(itemsWithWeight((h) => h.peRatio));
   const weightedForwardPe = calculateWeightedAverage(itemsWithWeight((h) => h.forwardPE));
@@ -484,7 +553,8 @@ export function aggregatePortfolioMetrics({
     },
     margins: {
       grossMargin: weightedGrossMargin != null ? Math.round(weightedGrossMargin * 100) / 100 : null,
-      operatingMargin: weightedOperatingMargin != null ? Math.round(weightedOperatingMargin * 100) / 100 : null,
+      operatingMargin:
+        weightedOperatingMargin != null ? Math.round(weightedOperatingMargin * 100) / 100 : null,
       netMargin: weightedNetMargin != null ? Math.round(weightedNetMargin * 100) / 100 : null,
     },
     returnsOnCapital: {
@@ -498,9 +568,12 @@ export function aggregatePortfolioMetrics({
       fcfGrowth: weightedFcfGrowth != null ? Math.round(weightedFcfGrowth * 100) / 100 : null,
     },
     health: {
-      netDebtToEbitda: weightedNetDebtToEbitda != null ? Math.round(weightedNetDebtToEbitda * 100) / 100 : null,
-      interestCoverage: weightedInterestCoverage != null ? Math.round(weightedInterestCoverage * 100) / 100 : null,
-      goodwillToAssets: weightedGoodwillToAssets != null ? Math.round(weightedGoodwillToAssets * 100) / 100 : null,
+      netDebtToEbitda:
+        weightedNetDebtToEbitda != null ? Math.round(weightedNetDebtToEbitda * 100) / 100 : null,
+      interestCoverage:
+        weightedInterestCoverage != null ? Math.round(weightedInterestCoverage * 100) / 100 : null,
+      goodwillToAssets:
+        weightedGoodwillToAssets != null ? Math.round(weightedGoodwillToAssets * 100) / 100 : null,
     },
     valuation: {
       peRatio: weightedPeRatio != null ? Math.round(weightedPeRatio * 100) / 100 : null,

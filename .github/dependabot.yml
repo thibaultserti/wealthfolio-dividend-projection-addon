@@ -1,45 +1,45 @@
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
       day: monday
       interval: weekly
-      time: "08:30"
+      time: '08:30'
       timezone: Europe/Paris
     commit-message:
-      prefix: "ci"
-      include: "scope"
+      prefix: 'ci'
+      include: 'scope'
 
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
       day: monday
       interval: weekly
-      time: "08:30"
+      time: '08:30'
       timezone: Europe/Paris
     commit-message:
-      prefix: "deps"
-      include: "scope"
+      prefix: 'deps'
+      include: 'scope'
 
-  - package-ecosystem: "npm"
-    directory: "/packages/dividends-projection-addon"
+  - package-ecosystem: 'npm'
+    directory: '/packages/dividends-projection-addon'
     schedule:
       day: monday
       interval: weekly
-      time: "08:30"
+      time: '08:30'
       timezone: Europe/Paris
     commit-message:
-      prefix: "deps(dividends)"
-      include: "scope"
+      prefix: 'deps(dividends)'
+      include: 'scope'
 
-  - package-ecosystem: "npm"
-    directory: "/packages/portfolio-metrics-addon"
+  - package-ecosystem: 'npm'
+    directory: '/packages/portfolio-metrics-addon'
     schedule:
       day: monday
       interval: weekly
-      time: "08:30"
+      time: '08:30'
       timezone: Europe/Paris
     commit-message:
-      prefix: "deps(metrics)"
-      include: "scope"
+      prefix: 'deps(metrics)'
+      include: 'scope'

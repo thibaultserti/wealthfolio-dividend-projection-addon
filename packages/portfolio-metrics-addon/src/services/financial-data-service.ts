@@ -71,7 +71,10 @@ export async function importFundamentalsFromCsv(
   csvText: string,
   api?: HostAPI,
 ): Promise<{ importedCount: number }> {
-  const lines = csvText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const lines = csvText
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
   if (lines.length < 2) {
     throw new Error('Le fichier CSV est vide ou ne contient pas d’en-têtes valides.');
   }
@@ -81,30 +84,71 @@ export async function importFundamentalsFromCsv(
   const delimiter = headerLine.includes(';') ? ';' : ',';
   const headers = headerLine.split(delimiter).map((h) => h.trim().replace(/^["']|["']$/g, ''));
 
-  const symbolIdx = headers.findIndex((h) => h.toLowerCase() === 'symbol' || h.toLowerCase() === 'ticker');
+  const symbolIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'symbol' || h.toLowerCase() === 'ticker',
+  );
   if (symbolIdx === -1) {
     throw new Error('Colonne obligatoire "symbol" manquante dans le fichier CSV.');
   }
 
   const nameIdx = headers.findIndex((h) => h.toLowerCase() === 'name' || h.toLowerCase() === 'nom');
-  const marketCapIdx = headers.findIndex((h) => h.toLowerCase() === 'marketcap' || h.toLowerCase() === 'capitalisation');
-  const grossMarginsIdx = headers.findIndex((h) => h.toLowerCase() === 'grossmargins' || h.toLowerCase() === 'margebrute');
-  const opMarginsIdx = headers.findIndex((h) => h.toLowerCase() === 'operatingmargins' || h.toLowerCase() === 'margeop' || h.toLowerCase() === 'margeoperationnelle');
-  const profitMarginsIdx = headers.findIndex((h) => h.toLowerCase() === 'profitmargins' || h.toLowerCase() === 'margenette');
+  const marketCapIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'marketcap' || h.toLowerCase() === 'capitalisation',
+  );
+  const grossMarginsIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'grossmargins' || h.toLowerCase() === 'margebrute',
+  );
+  const opMarginsIdx = headers.findIndex(
+    (h) =>
+      h.toLowerCase() === 'operatingmargins' ||
+      h.toLowerCase() === 'margeop' ||
+      h.toLowerCase() === 'margeoperationnelle',
+  );
+  const profitMarginsIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'profitmargins' || h.toLowerCase() === 'margenette',
+  );
   const roicIdx = headers.findIndex((h) => h.toLowerCase() === 'roic');
   const roceIdx = headers.findIndex((h) => h.toLowerCase() === 'roce');
-  const roeIdx = headers.findIndex((h) => h.toLowerCase() === 'returnonequity' || h.toLowerCase() === 'roe');
-  const revGrowthIdx = headers.findIndex((h) => h.toLowerCase() === 'revenuegrowth' || h.toLowerCase() === 'croissanceca');
-  const earnGrowthIdx = headers.findIndex((h) => h.toLowerCase() === 'earningsgrowth' || h.toLowerCase() === 'croissanceeps' || h.toLowerCase() === 'croissanceresultat');
-  const fcfGrowthIdx = headers.findIndex((h) => h.toLowerCase() === 'fcfgrowth' || h.toLowerCase() === 'croissancefcf');
-  const netDebtIdx = headers.findIndex((h) => h.toLowerCase() === 'netdebttoebitda' || h.toLowerCase() === 'dettenetteebitda');
-  const interestCoverageIdx = headers.findIndex((h) => h.toLowerCase() === 'interestcoverage' || h.toLowerCase() === 'couvertureinterets');
-  const goodwillIdx = headers.findIndex((h) => h.toLowerCase() === 'goodwilltoassets' || h.toLowerCase() === 'goodwill');
-  const peIdx = headers.findIndex((h) => h.toLowerCase() === 'trailingpe' || h.toLowerCase() === 'pe' || h.toLowerCase() === 'per');
-  const fwdPeIdx = headers.findIndex((h) => h.toLowerCase() === 'forwardpe' || h.toLowerCase() === 'forwardper');
-  const pegIdx = headers.findIndex((h) => h.toLowerCase() === 'pegratio' || h.toLowerCase() === 'peg');
-  const pfcfIdx = headers.findIndex((h) => h.toLowerCase() === 'pricetofreecashflow' || h.toLowerCase() === 'pfcf');
-  const evebitdaIdx = headers.findIndex((h) => h.toLowerCase() === 'enterprisetoebitda' || h.toLowerCase() === 'evebitda');
+  const roeIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'returnonequity' || h.toLowerCase() === 'roe',
+  );
+  const revGrowthIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'revenuegrowth' || h.toLowerCase() === 'croissanceca',
+  );
+  const earnGrowthIdx = headers.findIndex(
+    (h) =>
+      h.toLowerCase() === 'earningsgrowth' ||
+      h.toLowerCase() === 'croissanceeps' ||
+      h.toLowerCase() === 'croissanceresultat',
+  );
+  const fcfGrowthIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'fcfgrowth' || h.toLowerCase() === 'croissancefcf',
+  );
+  const netDebtIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'netdebttoebitda' || h.toLowerCase() === 'dettenetteebitda',
+  );
+  const interestCoverageIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'interestcoverage' || h.toLowerCase() === 'couvertureinterets',
+  );
+  const goodwillIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'goodwilltoassets' || h.toLowerCase() === 'goodwill',
+  );
+  const peIdx = headers.findIndex(
+    (h) =>
+      h.toLowerCase() === 'trailingpe' || h.toLowerCase() === 'pe' || h.toLowerCase() === 'per',
+  );
+  const fwdPeIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'forwardpe' || h.toLowerCase() === 'forwardper',
+  );
+  const pegIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'pegratio' || h.toLowerCase() === 'peg',
+  );
+  const pfcfIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'pricetofreecashflow' || h.toLowerCase() === 'pfcf',
+  );
+  const evebitdaIdx = headers.findIndex(
+    (h) => h.toLowerCase() === 'enterprisetoebitda' || h.toLowerCase() === 'evebitda',
+  );
 
   const resultMap: Record<string, RawStockFinancials> = {};
 
@@ -129,7 +173,8 @@ export async function importFundamentalsFromCsv(
       earningsGrowth: earnGrowthIdx !== -1 ? parseCsvValue(row[earnGrowthIdx]) : undefined,
       fcfGrowth: fcfGrowthIdx !== -1 ? parseCsvValue(row[fcfGrowthIdx]) : undefined,
       netDebtToEbitda: netDebtIdx !== -1 ? parseCsvValue(row[netDebtIdx]) : undefined,
-      interestCoverage: interestCoverageIdx !== -1 ? parseCsvValue(row[interestCoverageIdx]) : undefined,
+      interestCoverage:
+        interestCoverageIdx !== -1 ? parseCsvValue(row[interestCoverageIdx]) : undefined,
       goodwillToAssets: goodwillIdx !== -1 ? parseCsvValue(row[goodwillIdx]) : undefined,
       trailingPE: peIdx !== -1 ? parseCsvValue(row[peIdx]) : undefined,
       forwardPE: fwdPeIdx !== -1 ? parseCsvValue(row[fwdPeIdx]) : undefined,

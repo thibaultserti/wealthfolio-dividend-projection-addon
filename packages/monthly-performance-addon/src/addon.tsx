@@ -11,11 +11,7 @@ let addonCtx: AddonContext | undefined;
 // Route component wrapping the dashboard with the addon's isolated QueryClient
 const AddonRoute = () => {
   if (!addonCtx) {
-    return (
-      <div className="p-6 text-sm text-muted-foreground">
-        Loading addon context...
-      </div>
-    );
+    return <div className="p-6 text-sm text-muted-foreground">Loading addon context...</div>;
   }
 
   const queryClient = addonCtx.api.query.getClient() as QueryClient;

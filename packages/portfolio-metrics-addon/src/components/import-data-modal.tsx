@@ -41,7 +41,10 @@ export const ImportDataModal: React.FC<ImportDataModalProps> = ({
   const [fileName, setFileName] = useState('');
   const [parsedRowsCount, setParsedRowsCount] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [statusMessage, setStatusMessage] = useState<{
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
   const [hasCopied, setHasCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -180,7 +183,11 @@ export const ImportDataModal: React.FC<ImportDataModalProps> = ({
           {activeTab === 'import' ? (
             <div className="space-y-4">
               <p className="text-muted-foreground leading-relaxed">
-                Importez votre fichier <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground font-semibold">portfolio_fundamentals.csv</code> généré par le script local pour alimenter en direct les ratios fondamentaux.
+                Importez votre fichier{' '}
+                <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground font-semibold">
+                  portfolio_fundamentals.csv
+                </code>{' '}
+                généré par le script local pour alimenter en direct les ratios fondamentaux.
               </p>
 
               {/* Drag & Drop Area */}
@@ -217,7 +224,10 @@ export const ImportDataModal: React.FC<ImportDataModalProps> = ({
                   </span>
                 </div>
                 {parsedRowsCount != null && (
-                  <Badge variant="outline" className="mt-1 bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-xs">
+                  <Badge
+                    variant="outline"
+                    className="mt-1 bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-xs"
+                  >
                     {parsedRowsCount} actions détectées prêtes à l'import
                   </Badge>
                 )}
@@ -244,7 +254,8 @@ export const ImportDataModal: React.FC<ImportDataModalProps> = ({
           ) : (
             <div className="space-y-3">
               <p className="text-muted-foreground leading-relaxed">
-                Exécutez cette commande dans votre terminal pour extraire automatiquement les fondamentaux de vos actions :
+                Exécutez cette commande dans votre terminal pour extraire automatiquement les
+                fondamentaux de vos actions :
               </p>
 
               <div className="bg-muted/60 p-3.5 rounded-xl border border-border/80 font-mono text-xs text-foreground relative flex items-center justify-between gap-2 overflow-x-auto">
@@ -255,7 +266,11 @@ export const ImportDataModal: React.FC<ImportDataModalProps> = ({
                   className="h-7 text-xs flex items-center gap-1 shrink-0"
                   onClick={handleCopyCommand}
                 >
-                  {hasCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {hasCopied ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
                   <span>{hasCopied ? 'Copié' : 'Copier'}</span>
                 </Button>
               </div>
@@ -263,9 +278,21 @@ export const ImportDataModal: React.FC<ImportDataModalProps> = ({
               <div className="p-3 bg-muted/30 rounded-xl border border-border/60 text-xs text-muted-foreground space-y-1">
                 <span className="font-semibold text-foreground block">Comment ça marche ?</span>
                 <ol className="list-decimal list-inside space-y-0.5 text-[11px]">
-                  <li>Le script utilise Playwright / Google Finance pour extraire les vrais ratios bilanciels.</li>
-                  <li>Il crée le fichier <code className="text-primary font-mono font-semibold">portfolio_fundamentals.csv</code> dans votre dossier.</li>
-                  <li>Revenez sur l'onglet <strong>1. Importer le CSV</strong> pour valider l'affichage.</li>
+                  <li>
+                    Le script utilise Playwright / Google Finance pour extraire les vrais ratios
+                    bilanciels.
+                  </li>
+                  <li>
+                    Il crée le fichier{' '}
+                    <code className="text-primary font-mono font-semibold">
+                      portfolio_fundamentals.csv
+                    </code>{' '}
+                    dans votre dossier.
+                  </li>
+                  <li>
+                    Revenez sur l'onglet <strong>1. Importer le CSV</strong> pour valider
+                    l'affichage.
+                  </li>
                 </ol>
               </div>
             </div>

@@ -143,7 +143,11 @@ export function useMonthlyPerformance({
       if (!benchmarkSymbol || !benchmarkSymbol.trim()) return null;
       try {
         // Request history starting from 2000-01-01 to ensure full history is fetched
-        return await api.performance.calculateHistory('symbol', benchmarkSymbol.trim(), '2000-01-01');
+        return await api.performance.calculateHistory(
+          'symbol',
+          benchmarkSymbol.trim(),
+          '2000-01-01',
+        );
       } catch (err) {
         console.warn(`Failed to fetch benchmark history for ${benchmarkSymbol}:`, err);
         return null;
@@ -155,7 +159,8 @@ export function useMonthlyPerformance({
   });
 
   const isLoading =
-    portfolioHistoryQuery.isLoading || (Boolean(benchmarkSymbol) && benchmarkHistoryQuery.isLoading);
+    portfolioHistoryQuery.isLoading ||
+    (Boolean(benchmarkSymbol) && benchmarkHistoryQuery.isLoading);
   const isFetching = portfolioHistoryQuery.isFetching || benchmarkHistoryQuery.isFetching;
   const error = portfolioHistoryQuery.error || benchmarkHistoryQuery.error;
 

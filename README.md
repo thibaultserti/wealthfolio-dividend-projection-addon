@@ -4,22 +4,24 @@ Monorepo containing extensions and addons for [Wealthfolio](https://wealthfolio.
 
 ## 📦 Packages
 
-| Addon | Description | Path |
-| :--- | :--- | :--- |
-| **[Dividends Projection](packages/dividends-projection-addon)** | Visualize and project future dividend income, dividend yield, yield on cost, and historical dividend growth across portfolios. | `packages/dividends-projection-addon` |
-| **[Portfolio Metrics](packages/portfolio-metrics-addon)** | Analyze and compare fundamental stock metrics (Margins, ROIC/ROCE/ROE, Debt/EBITDA, Interest Coverage, Goodwill, P/E, P/FCF, Note Q) across portfolios and accounts. | `packages/portfolio-metrics-addon` |
-| **[Monthly Performance](packages/monthly-performance-addon)** | Monthly and annual investment returns breakdown matrix, return distribution bar chart, and benchmark comparison (Alpha). | `packages/monthly-performance-addon` |
+| Addon                                                           | Description                                                                                                                                                          | Path                                  |
+| :-------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------ |
+| **[Dividends Projection](packages/dividends-projection-addon)** | Visualize and project future dividend income, dividend yield, yield on cost, and historical dividend growth across portfolios.                                       | `packages/dividends-projection-addon` |
+| **[Portfolio Metrics](packages/portfolio-metrics-addon)**       | Analyze and compare fundamental stock metrics (Margins, ROIC/ROCE/ROE, Debt/EBITDA, Interest Coverage, Goodwill, P/E, P/FCF, Note Q) across portfolios and accounts. | `packages/portfolio-metrics-addon`    |
+| **[Monthly Performance](packages/monthly-performance-addon)**   | Monthly and annual investment returns breakdown matrix, return distribution bar chart, and benchmark comparison (Alpha).                                             | `packages/monthly-performance-addon`  |
 
 ---
 
 ## 🚀 Quick Start & Scripts
 
 ### Installation
+
 ```bash
 pnpm install
 ```
 
 ### Development
+
 ```bash
 # Run all addons in watch mode
 pnpm dev
@@ -31,6 +33,7 @@ pnpm dev:performance
 ```
 
 ### Build & Typecheck
+
 ```bash
 # Build all addons
 pnpm build
@@ -41,6 +44,7 @@ pnpm lint
 ```
 
 ### Tests
+
 ```bash
 # Run vitest across all addons
 pnpm test
@@ -52,6 +56,7 @@ pnpm test:performance
 ```
 
 ### Package (.zip for Wealthfolio)
+
 ```bash
 # Package all addons into dist/*.zip
 pnpm package
@@ -65,4 +70,5 @@ pnpm package:performance
 ---
 
 ## 📄 License
+
 MIT © [thibaultserti](https://github.com/thibaultserti)

@@ -66,7 +66,8 @@ export const MonthlyProjectionChart: React.FC<MonthlyProjectionChartProps> = ({
             <span className="inline-block w-2.5 h-2.5 rounded-xs bg-primary/80" /> Payout
           </span>
           <span className="flex items-center gap-1 ml-2">
-            <span className="inline-block w-3 h-0.5 bg-amber-500/80 border-dashed" /> Monthly Avg ({currencyFormatter.format(monthlyAverage)})
+            <span className="inline-block w-3 h-0.5 bg-amber-500/80 border-dashed" /> Monthly Avg (
+            {currencyFormatter.format(monthlyAverage)})
           </span>
         </div>
       </CardHeader>
@@ -165,8 +166,8 @@ export const MonthlyProjectionChart: React.FC<MonthlyProjectionChartProps> = ({
                       entry.isSelected
                         ? 'var(--primary, #3b82f6)'
                         : entry.amount > 0
-                        ? 'var(--primary, #3b82f6)'
-                        : 'var(--muted, #e2e8f0)'
+                          ? 'var(--primary, #3b82f6)'
+                          : 'var(--muted, #e2e8f0)'
                     }
                     fillOpacity={entry.isSelected ? 1 : entry.amount > 0 ? 0.75 : 0.25}
                     stroke={entry.isSelected ? 'var(--primary, #3b82f6)' : 'transparent'}

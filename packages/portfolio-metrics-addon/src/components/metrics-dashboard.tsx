@@ -35,7 +35,13 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
   });
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
-  const { data: metrics, isLoading, isFetching, refetch, error } = usePortfolioMetrics({
+  const {
+    data: metrics,
+    isLoading,
+    isFetching,
+    refetch,
+    error,
+  } = usePortfolioMetrics({
     api,
     scope,
   });
@@ -69,7 +75,8 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            Analyse approfondie des marges, rentabilités sur capitaux, santé financière, valorisations et Note Q
+            Analyse approfondie des marges, rentabilités sur capitaux, santé financière,
+            valorisations et Note Q
           </p>
         </div>
 
@@ -143,7 +150,12 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
                 Importez les fondamentaux réels de vos actions
               </h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Générez le fichier <code className="bg-muted px-1 py-0.5 rounded font-mono text-foreground font-semibold">portfolio_fundamentals.csv</code> avec le script Python local et importez-le en 1 clic pour afficher les marges réelles, le ROIC, la dette et le P/E.
+                Générez le fichier{' '}
+                <code className="bg-muted px-1 py-0.5 rounded font-mono text-foreground font-semibold">
+                  portfolio_fundamentals.csv
+                </code>{' '}
+                avec le script Python local et importez-le en 1 clic pour afficher les marges
+                réelles, le ROIC, la dette et le P/E.
               </p>
             </div>
           </div>
@@ -229,7 +241,9 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
               </div>
               <div className="mt-2 flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-extrabold text-foreground">
-                  {metrics.returnsOnCapital.roic != null ? `${metrics.returnsOnCapital.roic.toFixed(1)}%` : '—'}
+                  {metrics.returnsOnCapital.roic != null
+                    ? `${metrics.returnsOnCapital.roic.toFixed(1)}%`
+                    : '—'}
                 </span>
               </div>
               <span className="text-[11px] text-muted-foreground mt-1">
@@ -240,7 +254,9 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
             {/* P/E sur coût */}
             <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground font-medium">P/E sur coût (PRU)</span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  P/E sur coût (PRU)
+                </span>
                 <DollarSign className="w-4 h-4 text-primary" />
               </div>
               <div className="mt-2 flex items-baseline gap-1">
@@ -261,7 +277,9 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
             {/* Concentration Top 5 */}
             <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground font-medium">Concentration Top 5</span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  Concentration Top 5
+                </span>
                 <Percent className="w-4 h-4 text-amber-500" />
               </div>
               <div className="mt-2 flex items-baseline gap-1">
@@ -277,7 +295,9 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
             {/* Concentration Top 10 */}
             <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between col-span-2 sm:col-span-1">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground font-medium">Concentration Top 10</span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  Concentration Top 10
+                </span>
                 <PieChart className="w-4 h-4 text-blue-500" />
               </div>
               <div className="mt-2 flex items-baseline gap-1">
@@ -299,10 +319,7 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ api }) => {
           />
 
           {/* Holdings Detail Table with 5-tier colors and TickerLogos */}
-          <HoldingsMetricsTable
-            holdings={metrics.holdings}
-            baseCurrency={metrics.baseCurrency}
-          />
+          <HoldingsMetricsTable holdings={metrics.holdings} baseCurrency={metrics.baseCurrency} />
         </div>
       )}
 

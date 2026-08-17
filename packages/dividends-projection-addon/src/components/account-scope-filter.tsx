@@ -138,7 +138,9 @@ export const AccountScopeFilter: React.FC<AccountScopeFilterProps> = ({
                   <div className="flex flex-col truncate min-w-0">
                     <span className="truncate">{account.name}</span>
                     {account.group && (
-                      <span className="text-[10px] text-muted-foreground truncate">{account.group}</span>
+                      <span className="text-[10px] text-muted-foreground truncate">
+                        {account.group}
+                      </span>
                     )}
                   </div>
                   {account.currency && (

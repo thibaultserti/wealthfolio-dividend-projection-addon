@@ -91,10 +91,10 @@ def extract_yahoo_stock_data(page, symbol):
     # 2. Margins
     profit_margin = parse_num(stats_map.get('profit margin'))
     operating_margin = parse_num(stats_map.get('operating margin (ttm)')) or parse_num(stats_map.get('operating margin'))
-    
+
     revenue = parse_num(stats_map.get('revenue (ttm)')) or parse_num(stats_map.get('revenue'))
     gross_profit = parse_num(stats_map.get('gross profit (ttm)')) or parse_num(stats_map.get('gross profit'))
-    
+
     gross_margin = None
     if gross_profit is not None and revenue is not None and revenue > 0:
         gross_margin = round(gross_profit / revenue, 4)

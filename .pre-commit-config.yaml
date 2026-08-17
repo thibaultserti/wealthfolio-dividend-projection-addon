@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://www.schemastore.org/prek.json
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        entry: pnpm prettier --write --ignore-unknown
+        language: system
+        files: \.(js|jsx|ts|tsx|json|css|md|yaml|yml)$
+
+      - id: eslint
+        name: eslint
+        entry: pnpm eslint --fix
+        language: system
+        files: \.(js|jsx|ts|tsx)$
+
+      - id: type-check
+        name: type-check
+        entry: pnpm type-check
+        language: system
+        pass_filenames: false
+        types_or: [ts, tsx]
+
+      - id: test
+        name: test
+        entry: pnpm test
+        language: system
+        pass_filenames: false
+        types_or: [ts, tsx]
+
+      - id: build
+        name: build
+        entry: pnpm build
+        language: system
+        pass_filenames: false
+        types_or: [ts, tsx, css, json]

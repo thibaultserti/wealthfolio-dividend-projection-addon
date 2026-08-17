@@ -50,13 +50,7 @@ export const MonthlyPerformanceDashboard: React.FC<MonthlyPerformanceDashboardPr
     benchmarkSymbol,
   });
 
-  const {
-    portfolioSeries,
-    benchmarkSeries,
-    comparisonData,
-    portfolioName,
-    benchmarkName,
-  } = data;
+  const { portfolioSeries, benchmarkSeries, comparisonData, portfolioName, benchmarkName } = data;
 
   // Filter comparison data by dateRange (by years included in the range)
   const filteredComparisonData = useMemo(() => {
@@ -115,17 +109,14 @@ export const MonthlyPerformanceDashboard: React.FC<MonthlyPerformanceDashboardPr
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            Monthly breakdown of investment returns, annual compounding, and benchmark comparison (Alpha).
+            Monthly breakdown of investment returns, annual compounding, and benchmark comparison
+            (Alpha).
           </p>
         </div>
 
         {/* Action Controls: Date Range Selector, Scope Filter, Benchmark Picker, Refresh */}
         <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
-          <DateRangeSelector
-            value={dateRange}
-            onChange={setDateRange}
-            hiddenRanges={['1D']}
-          />
+          <DateRangeSelector value={dateRange} onChange={setDateRange} hiddenRanges={['1D']} />
           <PortfolioScopeFilter api={api} scope={scope} onScopeChange={setScope} />
           <BenchmarkSelector
             api={api}
@@ -174,7 +165,8 @@ export const MonthlyPerformanceDashboard: React.FC<MonthlyPerformanceDashboardPr
           </div>
           <h3 className="text-lg font-semibold text-foreground">No Performance History Found</h3>
           <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
-            Add transactions or portfolio activities to your accounts in Wealthfolio to generate monthly return matrices and charts.
+            Add transactions or portfolio activities to your accounts in Wealthfolio to generate
+            monthly return matrices and charts.
           </p>
         </Card>
       )}
@@ -193,7 +185,8 @@ export const MonthlyPerformanceDashboard: React.FC<MonthlyPerformanceDashboardPr
                   {selectedYear} Return Breakdown
                 </CardTitle>
                 <div className="text-xs text-muted-foreground font-mono bg-muted/40 px-2 py-0.5 rounded-md">
-                  {filteredComparisonData.length} {filteredComparisonData.length === 1 ? 'Year' : 'Years'} Total
+                  {filteredComparisonData.length}{' '}
+                  {filteredComparisonData.length === 1 ? 'Year' : 'Years'} Total
                 </div>
               </div>
 

@@ -11,7 +11,9 @@ const ONE = 1;
 /**
  * Parses "YYYY-MM-DD" into { year, monthIndex (0..11), day }
  */
-export function parseDateParts(dateStr: string): { year: number; month: number; day: number } | null {
+export function parseDateParts(
+  dateStr: string,
+): { year: number; month: number; day: number } | null {
   if (!dateStr) return null;
   const parts = dateStr.split('-');
   if (parts.length < 3) return null;
@@ -196,7 +198,7 @@ export function buildMonthlyComparison(
 
     const portfolioYearTotal = pYear?.yearTotal ?? null;
     const benchmarkYearTotal = bYear?.yearTotal ?? null;
-    
+
     // Relative year total (Alpha): compounded excess ONLY over months where both portfolio and benchmark have data
     const relativeYearTotal = hasCommonMonths
       ? commonPortfolioFactor - 1 - (commonBenchmarkFactor - 1)
@@ -242,7 +244,8 @@ export function calculatePerformanceKPIs(
     }
   }
 
-  const positiveRatio = totalMonthsCount > 0 ? (positiveMonthsCount / totalMonthsCount) * 100 : null;
+  const positiveRatio =
+    totalMonthsCount > 0 ? (positiveMonthsCount / totalMonthsCount) * 100 : null;
 
   // Current year return
   const currentYear = new Date().getFullYear();

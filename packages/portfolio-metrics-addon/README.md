@@ -3,6 +3,7 @@
 An advanced financial & fundamental metrics addon for [Wealthfolio](https://wealthfolio.app).
 
 ## Features
+
 - **General Statistics**: Stock count, Top 5 & Top 10 concentration %, Weighted Market Cap, and composite Quality Score (Note Q).
 - **Margins Analysis**: Gross margin, Operating margin, Net profit margin with intuitive quality threshold progress gauges.
 - **Returns on Capital**: ROIC (Return on Invested Capital), ROCE (Return on Capital Employed), ROE (Return on Equity).
@@ -13,10 +14,9 @@ An advanced financial & fundamental metrics addon for [Wealthfolio](https://weal
 - **Holdings Breakdown**: In-depth table of each stock position with sorting, filtering, and quality score badges.
 
 ## License
-MIT
 
+MIT
 
 ## Overview
 
 ![Overview](assets/overview.png)
-

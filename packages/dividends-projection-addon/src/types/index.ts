@@ -1,4 +1,5 @@
-export type DividendFrequency = 'monthly' | 'quarterly' | 'semi-annual' | 'annual' | 'irregular' | 'none';
+export type DividendFrequency =
+  'monthly' | 'quarterly' | 'semi-annual' | 'annual' | 'irregular' | 'none';
 
 export interface AccountScope {
   type: 'all' | 'group' | 'account' | 'portfolio';

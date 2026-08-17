@@ -19,4 +19,3 @@ A Wealthfolio add-on providing interactive forward-looking dividend projections,
 ## Overview
 
 ![Overview](assets/overview.png)
-

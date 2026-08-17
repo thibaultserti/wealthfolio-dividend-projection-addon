@@ -10,11 +10,7 @@ interface TickerLogoProps {
 // In-memory object URL cache across components to avoid refetching blobs
 const logoUrlCache = new Map<string, string | null>();
 
-export const TickerLogo: React.FC<TickerLogoProps> = ({
-  symbol,
-  className = '',
-  size = 'md',
-}) => {
+export const TickerLogo: React.FC<TickerLogoProps> = ({ symbol, className = '', size = 'md' }) => {
   const cleanSymbol = (symbol || '').trim().toUpperCase();
   const baseSymbol = cleanSymbol ? cleanSymbol.split(/[.:-]/)[0] : '';
 
@@ -33,33 +29,33 @@ export const TickerLogo: React.FC<TickerLogoProps> = ({
     if (!cleanSymbol) return;
 
     // Check memory cache
-    const cached = logoUrlCache.get(cleanSymbol) ?? (baseSymbol ? logoUrlCache.get(baseSymbol) : undefined);
+    const cached =
+      logoUrlCache.get(cleanSymbol) ?? (baseSymbol ? logoUrlCache.get(baseSymbol) : undefined);
     if (cached !== undefined) {
       setObjectUrl(cached);
       return;
     }
 
-function blobToDataUrl(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (typeof reader.result === 'string') {
-        resolve(reader.result);
-      } else {
-        reject(new Error('Failed to read blob'));
-      }
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
+    function blobToDataUrl(blob: Blob): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === 'string') {
+            resolve(reader.result);
+          } else {
+            reject(new Error('Failed to read blob'));
+          }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
 
     let isMounted = true;
 
     async function loadLogo() {
       const requestTickerLogo = (globalThis as any).__wealthfolioRequestTickerLogo as
-        | ((sym: string) => Promise<Blob | null>)
-        | undefined;
+        ((sym: string) => Promise<Blob | null>) | undefined;
 
       const candidates = Array.from(
         new Set([

@@ -44,9 +44,7 @@
     {
       "category": "accounts",
       "purpose": "Filter and display dividend projections by portfolio or account",
-      "functions": [
-        { "name": "getAll", "isDeclared": true, "isDetected": true }
-      ]
+      "functions": [{ "name": "getAll", "isDeclared": true, "isDetected": true }]
     },
     {
       "category": "market-data",
@@ -67,23 +65,17 @@
     {
       "category": "currency",
       "purpose": "Convert foreign dividend payouts to your base currency",
-      "functions": [
-        { "name": "getAll", "isDeclared": true, "isDetected": true }
-      ]
+      "functions": [{ "name": "getAll", "isDeclared": true, "isDetected": true }]
     },
     {
       "category": "assets",
       "purpose": "Access asset profile metadata such as exchange MIC and currency to resolve international stock tickers",
-      "functions": [
-        { "name": "getProfile", "isDeclared": true, "isDetected": true }
-      ]
+      "functions": [{ "name": "getProfile", "isDeclared": true, "isDetected": true }]
     },
     {
       "category": "settings",
       "purpose": "Get user base currency and preferences",
-      "functions": [
-        { "name": "get", "isDeclared": true, "isDetected": true }
-      ]
+      "functions": [{ "name": "get", "isDeclared": true, "isDetected": true }]
     }
   ],
   "keywords": ["wealthfolio", "addon", "dividends", "income", "yield", "projection"],

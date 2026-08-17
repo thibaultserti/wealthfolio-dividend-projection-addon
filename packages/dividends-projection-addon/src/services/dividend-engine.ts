@@ -1,8 +1,4 @@
-import type {
-  DividendEvent,
-  Holding,
-  ActivityDetails,
-} from '@wealthfolio/addon-sdk';
+import type { DividendEvent, Holding, ActivityDetails } from '@wealthfolio/addon-sdk';
 import type {
   DividendFrequency,
   DividendsSummary,
@@ -132,7 +128,10 @@ export function analyzeDividendSchedule(
     // For semi-annual stocks (e.g. interim + final), sum the 2 payouts from trailing 12m if available
     if (last12mEvents.length >= 2) {
       annualDividendPerShare = last12mEvents.slice(-2).reduce((acc, e) => acc + e.amount, 0);
-    } else if (sorted.length >= 2 && (sorted[sorted.length - 1].date - sorted[sorted.length - 2].date) / 86400 <= 245) {
+    } else if (
+      sorted.length >= 2 &&
+      (sorted[sorted.length - 1].date - sorted[sorted.length - 2].date) / 86400 <= 245
+    ) {
       annualDividendPerShare = sorted[sorted.length - 1].amount + sorted[sorted.length - 2].amount;
     } else {
       annualDividendPerShare = latestPayout * 2;
@@ -238,7 +237,8 @@ export function analyzeDividendSchedule(
       if (oldestMultiYearEvent && oldestMultiYearEvent.amount > 0 && latest.amount > 0) {
         const yearsDiff = (latest.date - oldestMultiYearEvent.date) / oneYearSec;
         if (yearsDiff >= 1.8) {
-          const cagr = (Math.pow(latest.amount / oldestMultiYearEvent.amount, 1 / yearsDiff) - 1) * 100;
+          const cagr =
+            (Math.pow(latest.amount / oldestMultiYearEvent.amount, 1 / yearsDiff) - 1) * 100;
           if (Math.abs(cagr) <= 100) {
             growth5YPct = cagr;
           }
@@ -319,7 +319,8 @@ export function generateMonthlyProjections(
 
     // Compute percent contribution of each holding to this month
     items.forEach((item) => {
-      item.percentOfMonthTotal = totalAmountBase > 0 ? (item.amountBase / totalAmountBase) * 100 : 0;
+      item.percentOfMonthTotal =
+        totalAmountBase > 0 ? (item.amountBase / totalAmountBase) * 100 : 0;
     });
 
     // Sort items by amount descending
@@ -347,19 +348,41 @@ export function isCash(holding: Holding): boolean {
   if (holding.holdingType === 'cash') return true;
   const sym = (holding.instrument?.symbol || '').toUpperCase().trim();
   const id = (holding.instrument?.id || '').toLowerCase().trim();
-  if (id.startsWith('cash:') || sym === '$CASH' || sym.startsWith('CASH-') || sym.startsWith('CASH:')) {
+  if (
+    id.startsWith('cash:') ||
+    sym === '$CASH' ||
+    sym.startsWith('CASH-') ||
+    sym.startsWith('CASH:')
+  ) {
     return true;
   }
   const classifications = holding.instrument?.classifications as
-    | { assetType?: { id?: string; key?: string; parentId?: string } }
-    | undefined;
+    { assetType?: { id?: string; key?: string; parentId?: string } } | undefined;
   const assetTypeId = classifications?.assetType?.id || classifications?.assetType?.key;
   const assetTypeParent = classifications?.assetType?.parentId;
   if (assetTypeId === 'CASH' || assetTypeId === 'DEPOSIT' || assetTypeParent === 'CASH_FX') {
     return true;
   }
-  const FIAT_CURRENCIES = new Set(['EUR', 'USD', 'GBP', 'CAD', 'CHF', 'JPY', 'AUD', 'NZD', 'SEK', 'NOK', 'DKK', 'PLN', 'SGD', 'HKD']);
-  if (FIAT_CURRENCIES.has(sym) && (id.includes('cash') || holding.instrument?.quoteMode === 'MANUAL')) {
+  const FIAT_CURRENCIES = new Set([
+    'EUR',
+    'USD',
+    'GBP',
+    'CAD',
+    'CHF',
+    'JPY',
+    'AUD',
+    'NZD',
+    'SEK',
+    'NOK',
+    'DKK',
+    'PLN',
+    'SGD',
+    'HKD',
+  ]);
+  if (
+    FIAT_CURRENCIES.has(sym) &&
+    (id.includes('cash') || holding.instrument?.quoteMode === 'MANUAL')
+  ) {
     return true;
   }
   return false;
@@ -371,8 +394,7 @@ export function isCash(holding: Holding): boolean {
 export function isEtfOrFund(holding: Holding): boolean {
   if (isCash(holding)) return true;
   const classifications = holding.instrument?.classifications as
-    | { assetType?: { id?: string; key?: string; parentId?: string } }
-    | undefined;
+    { assetType?: { id?: string; key?: string; parentId?: string } } | undefined;
   const assetTypeId = classifications?.assetType?.id || classifications?.assetType?.key;
   const assetTypeParent = classifications?.assetType?.parentId;
 
@@ -388,7 +410,8 @@ export function isEtfOrFund(holding: Holding): boolean {
     return true;
   }
 
-  const metaProfile = ((holding as unknown as { metadata?: { profile?: { quoteType?: string } } }).metadata)?.profile;
+  const metaProfile = (holding as unknown as { metadata?: { profile?: { quoteType?: string } } })
+    .metadata?.profile;
   const quoteType = metaProfile?.quoteType?.toUpperCase();
   if (quoteType === 'ETF' || quoteType === 'MUTUALFUND' || quoteType === 'INDEX') {
     return true;
@@ -433,7 +456,8 @@ export function calculateDividendsSummary({
   let totalCostBasis = 0;
 
   // Index activities by symbol and assetId for fallback
-  const divActivitiesBySymbol: Record<string, { date: Date | string; amountPerShare: number }[]> = {};
+  const divActivitiesBySymbol: Record<string, { date: Date | string; amountPerShare: number }[]> =
+    {};
   activities
     .filter((a) => a.activityType === 'DIVIDEND')
     .forEach((a) => {
@@ -536,7 +560,8 @@ export function calculateDividendsSummary({
 
   // Compute portfolio weights
   processedHoldings.forEach((h) => {
-    h.weightInIncomePct = projectedAnnualIncome > 0 ? (h.annualDividendBase / projectedAnnualIncome) * 100 : 0;
+    h.weightInIncomePct =
+      projectedAnnualIncome > 0 ? (h.annualDividendBase / projectedAnnualIncome) * 100 : 0;
     h.weightInPortfolioPct = totalMarketValue > 0 ? (h.marketValue / totalMarketValue) * 100 : 0;
   });
 
@@ -544,14 +569,18 @@ export function calculateDividendsSummary({
   processedHoldings.sort((a, b) => b.annualDividendBase - a.annualDividendBase);
 
   // Calculate portfolio dividend yield and yield on cost
-  const dividendYieldPct = totalMarketValue > 0 ? (projectedAnnualIncome / totalMarketValue) * 100 : 0;
+  const dividendYieldPct =
+    totalMarketValue > 0 ? (projectedAnnualIncome / totalMarketValue) * 100 : 0;
   const yieldOnCostPct = totalCostBasis > 0 ? (projectedAnnualIncome / totalCostBasis) * 100 : 0;
 
   // Generate 12-month projections
   const monthlyProjections = generateMonthlyProjections(processedHoldings);
 
   // Compute overall historical dividend growth from activities (or holding aggregates)
-  const { growth12MPct, growth5YPct, historicalYearsData } = calculatePortfolioDividendGrowth(activities, processedHoldings);
+  const { growth12MPct, growth5YPct, historicalYearsData } = calculatePortfolioDividendGrowth(
+    activities,
+    processedHoldings,
+  );
 
   const payingHoldingsCount = processedHoldings.filter((h) => h.isPayer).length;
 
@@ -630,7 +659,8 @@ function calculatePortfolioDividendGrowth(
     historicalYearsData = years.map((year, idx) => {
       const amount = yearlySums[year];
       const prevAmount = idx > 0 ? yearlySums[years[idx - 1]] : null;
-      const growthPct = prevAmount && prevAmount > 0 ? ((amount - prevAmount) / prevAmount) * 100 : null;
+      const growthPct =
+        prevAmount && prevAmount > 0 ? ((amount - prevAmount) / prevAmount) * 100 : null;
       return { year, amount, growthPct };
     });
   }

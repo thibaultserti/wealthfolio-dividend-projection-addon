@@ -2,15 +2,7 @@ import React from 'react';
 import type { MonthlyPerformanceKPIs } from '../types';
 import { MONTH_NAMES } from '../utils/monthly-performance-utils';
 import { Card, CardContent } from '@wealthfolio/ui';
-import {
-  TrendingUp,
-  TrendingDown,
-  Percent,
-  Calendar,
-  Zap,
-  Target,
-  Award,
-} from 'lucide-react';
+import { TrendingUp, TrendingDown, Percent, Calendar, Zap, Target, Award } from 'lucide-react';
 
 interface MonthlyKPIsProps {
   kpis: MonthlyPerformanceKPIs;

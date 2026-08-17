@@ -18,7 +18,13 @@ export const DividendsDashboard: React.FC<DividendsDashboardProps> = ({ api }) =
   const [scope, setScope] = useState<AccountScope>({ type: 'all', label: 'All Portfolios' });
   const [selectedMonthKey, setSelectedMonthKey] = useState<string | null>(null);
 
-  const { data: summary, isLoading, error, refetch, isRefetching } = useDividendData({
+  const {
+    data: summary,
+    isLoading,
+    error,
+    refetch,
+    isRefetching,
+  } = useDividendData({
     api,
     scope,
   });
@@ -28,7 +34,9 @@ export const DividendsDashboard: React.FC<DividendsDashboardProps> = ({ api }) =
     if (summary && summary.monthlyProjections.length > 0 && !selectedMonthKey) {
       // Pick current month or the first month that has a non-zero payout if possible
       const monthWithPayout = summary.monthlyProjections.find((m) => m.totalAmountBase > 0);
-      setSelectedMonthKey(monthWithPayout ? monthWithPayout.key : summary.monthlyProjections[0].key);
+      setSelectedMonthKey(
+        monthWithPayout ? monthWithPayout.key : summary.monthlyProjections[0].key,
+      );
     }
   }, [summary, selectedMonthKey]);
 
@@ -46,7 +54,8 @@ export const DividendsDashboard: React.FC<DividendsDashboardProps> = ({ api }) =
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            Forecast future dividend distributions, analyze yields, yield on cost, and track dividend growth.
+            Forecast future dividend distributions, analyze yields, yield on cost, and track
+            dividend growth.
           </p>
         </div>
 
@@ -123,7 +132,9 @@ export const DividendsDashboard: React.FC<DividendsDashboardProps> = ({ api }) =
                 </div>
                 <div className="text-base font-semibold text-foreground">No Holdings Found</div>
                 <div className="text-xs text-muted-foreground max-w-sm">
-                  There are no assets or holdings in the selected scope ({scope.label || 'Selected Scope'}). Add holdings or select another portfolio to view dividend projections.
+                  There are no assets or holdings in the selected scope (
+                  {scope.label || 'Selected Scope'}). Add holdings or select another portfolio to
+                  view dividend projections.
                 </div>
               </CardContent>
             </Card>

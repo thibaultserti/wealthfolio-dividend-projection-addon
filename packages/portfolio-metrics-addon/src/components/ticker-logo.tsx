@@ -9,11 +9,7 @@ interface TickerLogoProps {
 
 const logoUrlCache = new Map<string, string | null>();
 
-export const TickerLogo: React.FC<TickerLogoProps> = ({
-  symbol,
-  className = '',
-  size = 'sm',
-}) => {
+export const TickerLogo: React.FC<TickerLogoProps> = ({ symbol, className = '', size = 'sm' }) => {
   const cleanSymbol = (symbol || '').trim().toUpperCase();
   const baseSymbol = cleanSymbol ? cleanSymbol.split(/[.:-]/)[0] : '';
 
@@ -31,7 +27,8 @@ export const TickerLogo: React.FC<TickerLogoProps> = ({
   useEffect(() => {
     if (!cleanSymbol) return;
 
-    const cached = logoUrlCache.get(cleanSymbol) ?? (baseSymbol ? logoUrlCache.get(baseSymbol) : undefined);
+    const cached =
+      logoUrlCache.get(cleanSymbol) ?? (baseSymbol ? logoUrlCache.get(baseSymbol) : undefined);
     if (cached !== undefined) {
       setObjectUrl(cached);
       return;
@@ -56,8 +53,7 @@ export const TickerLogo: React.FC<TickerLogoProps> = ({
 
     async function loadLogo() {
       const requestTickerLogo = (globalThis as any).__wealthfolioRequestTickerLogo as
-        | ((sym: string) => Promise<Blob | null>)
-        | undefined;
+        ((sym: string) => Promise<Blob | null>) | undefined;
 
       const candidates = Array.from(
         new Set([

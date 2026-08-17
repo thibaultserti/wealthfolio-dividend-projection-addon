@@ -27,11 +27,11 @@ type SortField =
 // 5-Tier Vibrant Colors
 const C = {
   VERY_GOOD: '#22c55e', // Vert foncé / vif (Excellence)
-  GOOD: '#4ade80',      // Vert clair (Bon)
-  AVERAGE: '#f59e0b',   // Orange / Ambre (Moyen)
-  BAD: '#f87171',       // Rouge clair / Rose (Médiocre)
-  VERY_BAD: '#ef4444',  // Rouge vif (Très mauvais)
-  MUTED: '#9ca3af',     // Gris neutre (Non dispo / N/A)
+  GOOD: '#4ade80', // Vert clair (Bon)
+  AVERAGE: '#f59e0b', // Orange / Ambre (Moyen)
+  BAD: '#f87171', // Rouge clair / Rose (Médiocre)
+  VERY_BAD: '#ef4444', // Rouge vif (Très mauvais)
+  MUTED: '#9ca3af', // Gris neutre (Non dispo / N/A)
 };
 
 const getQualityScoreStyle = (score: number) => {
@@ -110,7 +110,10 @@ const getPegColor = (val: number | null | undefined): string => {
   return C.VERY_GOOD;
 };
 
-const getPeOnCostColor = (peOnCost: number | null | undefined, peRatio: number | null | undefined): string => {
+const getPeOnCostColor = (
+  peOnCost: number | null | undefined,
+  peRatio: number | null | undefined,
+): string => {
   if (peOnCost === null || peOnCost === undefined || isNaN(peOnCost)) return C.MUTED;
   if (!peRatio) return C.AVERAGE;
   if (peOnCost <= peRatio * 0.75) return C.VERY_GOOD;
@@ -146,10 +149,7 @@ export const HoldingsMetricsTable: React.FC<HoldingsMetricsTableProps> = ({
         }
         if (!searchTerm.trim()) return true;
         const q = searchTerm.toLowerCase();
-        return (
-          h.symbol.toLowerCase().includes(q) ||
-          h.name.toLowerCase().includes(q)
-        );
+        return h.symbol.toLowerCase().includes(q) || h.name.toLowerCase().includes(q);
       })
       .sort((a, b) => {
         let valA: number | string = 0;
@@ -231,7 +231,12 @@ export const HoldingsMetricsTable: React.FC<HoldingsMetricsTableProps> = ({
   };
 
   const fmtMarketCap = (valInMillions: number | null | undefined) => {
-    if (valInMillions === null || valInMillions === undefined || isNaN(valInMillions) || valInMillions === 0) {
+    if (
+      valInMillions === null ||
+      valInMillions === undefined ||
+      isNaN(valInMillions) ||
+      valInMillions === 0
+    ) {
       return '—';
     }
     if (valInMillions >= 1000) {
@@ -250,7 +255,9 @@ export const HoldingsMetricsTable: React.FC<HoldingsMetricsTableProps> = ({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
         <div className="text-xs text-muted-foreground">
           <span className="font-semibold text-foreground">Détail des positions actions</span>
-          <span className="ml-2 hidden md:inline">Fondamentaux, marges, valorisations (P/E, Forward P/E, PEG) avec gradient de qualité</span>
+          <span className="ml-2 hidden md:inline">
+            Fondamentaux, marges, valorisations (P/E, Forward P/E, PEG) avec gradient de qualité
+          </span>
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -269,7 +276,9 @@ export const HoldingsMetricsTable: React.FC<HoldingsMetricsTableProps> = ({
             <button
               onClick={() => setMinQualityFilter(null)}
               className={`px-2 py-1 rounded transition-colors ${
-                minQualityFilter === null ? 'bg-background shadow-xs font-medium text-foreground' : 'text-muted-foreground hover:text-foreground'
+                minQualityFilter === null
+                  ? 'bg-background shadow-xs font-medium text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               Tous
@@ -277,7 +286,9 @@ export const HoldingsMetricsTable: React.FC<HoldingsMetricsTableProps> = ({
             <button
               onClick={() => setMinQualityFilter(12)}
               className={`px-2 py-1 rounded transition-colors ${
-                minQualityFilter === 12 ? 'bg-background shadow-xs font-medium text-foreground' : 'text-muted-foreground hover:text-foreground'
+                minQualityFilter === 12
+                  ? 'bg-background shadow-xs font-medium text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               Note Q ≥ 12
@@ -285,7 +296,9 @@ export const HoldingsMetricsTable: React.FC<HoldingsMetricsTableProps> = ({
             <button
               onClick={() => setMinQualityFilter(15)}
               className={`px-2 py-1 rounded transition-colors ${
-                minQualityFilter === 15 ? 'bg-background shadow-xs font-medium text-emerald-400' : 'text-emerald-500/70 hover:text-emerald-400'
+                minQualityFilter === 15
+                  ? 'bg-background shadow-xs font-medium text-emerald-400'
+                  : 'text-emerald-500/70 hover:text-emerald-400'
               }`}
             >
               Note Q ≥ 15 ★
@@ -299,79 +312,118 @@ export const HoldingsMetricsTable: React.FC<HoldingsMetricsTableProps> = ({
         <table className="w-full text-left text-xs border-collapse">
           <thead>
             <tr className="bg-muted/40 border-b border-border text-muted-foreground font-medium whitespace-nowrap">
-              <th className="py-2.5 px-3 cursor-pointer hover:text-foreground" onClick={() => handleSort('symbol')}>
+              <th
+                className="py-2.5 px-3 cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('symbol')}
+              >
                 <div className="flex items-center gap-1">
                   <span>Action</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('weight')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('weight')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>Poids</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('marketCap')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('marketCap')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>Cap.</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-center cursor-pointer hover:text-foreground" onClick={() => handleSort('qualityScore')}>
+              <th
+                className="py-2.5 px-3 text-center cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('qualityScore')}
+              >
                 <div className="flex items-center justify-center gap-1">
                   <span>Note Q</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('operatingMargin')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('operatingMargin')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>Marge expl.</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('netMargin')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('netMargin')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>Marge nette</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('roic')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('roic')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>ROIC</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('revenueGrowth')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('revenueGrowth')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>Croiss. CA</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('peRatio')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('peRatio')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>P/E</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('forwardPE')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('forwardPE')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>Fwd P/E</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('pegRatio')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('pegRatio')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>PEG</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('peOnCost')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('peOnCost')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>P/E sur coût</span>
                   <ArrowUpDown className="w-3 h-3" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('marketValue')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('marketValue')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   <span>Valeur ({baseCurrency})</span>
                   <ArrowUpDown className="w-3 h-3" />
@@ -382,7 +434,10 @@ export const HoldingsMetricsTable: React.FC<HoldingsMetricsTableProps> = ({
           <tbody className="divide-y divide-border/40 whitespace-nowrap font-mono text-[11px]">
             {filteredAndSorted.length === 0 ? (
               <tr>
-                <td colSpan={13} className="py-8 text-center text-muted-foreground text-sm font-sans">
+                <td
+                  colSpan={13}
+                  className="py-8 text-center text-muted-foreground text-sm font-sans"
+                >
                   Aucune position action trouvée.
                 </td>
               </tr>

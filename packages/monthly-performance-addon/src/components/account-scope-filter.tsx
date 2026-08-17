@@ -1,1 +1,4 @@
-export { PortfolioScopeFilter, PortfolioScopeFilter as AccountScopeFilter } from './portfolio-scope-filter';
+export {
+  PortfolioScopeFilter,
+  PortfolioScopeFilter as AccountScopeFilter,
+} from './portfolio-scope-filter';

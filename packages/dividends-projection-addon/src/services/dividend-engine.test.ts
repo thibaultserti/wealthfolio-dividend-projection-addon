@@ -146,14 +146,14 @@ describe('Dividend Engine', () => {
     // 3 annual payments in May (month 5) of €3.15, €3.50, €3.80
     const events: DividendEvent[] = [
       { amount: 3.15, date: Math.floor(new Date('2023-05-15').getTime() / 1000) },
-      { amount: 3.50, date: Math.floor(new Date('2024-05-15').getTime() / 1000) },
-      { amount: 3.80, date: Math.floor(new Date('2025-05-15').getTime() / 1000) },
+      { amount: 3.5, date: Math.floor(new Date('2024-05-15').getTime() / 1000) },
+      { amount: 3.8, date: Math.floor(new Date('2025-05-15').getTime() / 1000) },
     ];
 
     const result = analyzeDividendSchedule(events);
     expect(result.frequency).toBe('annual');
-    expect(result.latestPayoutPerShare).toBe(3.80);
-    expect(result.annualDividendPerShare).toBe(3.80);
+    expect(result.latestPayoutPerShare).toBe(3.8);
+    expect(result.annualDividendPerShare).toBe(3.8);
     expect(result.payoutMonths).toEqual([5]);
   });
 
@@ -166,7 +166,7 @@ describe('Dividend Engine', () => {
 
     const result = analyzeDividendSchedule(events);
     expect(result.frequency).toBe('semi-annual');
-    expect(result.annualDividendPerShare).toBeCloseTo(4.50, 2);
+    expect(result.annualDividendPerShare).toBeCloseTo(4.5, 2);
     expect(result.payoutMonths).toEqual([4, 11]);
   });
 
@@ -276,4 +276,3 @@ describe('Dividend Engine', () => {
     expect(summary.growth12MPct).toBeCloseTo(4.35, 1);
   });
 });
-

@@ -9,13 +9,7 @@ import {
 } from '../services/metrics-engine';
 import { fetchStockFundamentals } from '../services/financial-data-service';
 
-export function usePortfolioMetrics({
-  api,
-  scope,
-}: {
-  api: HostAPI;
-  scope: AccountScope;
-}) {
+export function usePortfolioMetrics({ api, scope }: { api: HostAPI; scope: AccountScope }) {
   return useQuery<PortfolioAggregatedMetrics, Error>({
     queryKey: ['portfolio-metrics-data', scope],
     queryFn: async () => {
@@ -59,12 +53,16 @@ export function usePortfolioMetrics({
         if (existing) {
           existing.quantity = (Number(existing.quantity) || 0) + (Number(h.quantity) || 0);
           if (existing.marketValue && h.marketValue) {
-            existing.marketValue.local = (Number(existing.marketValue.local) || 0) + (Number(h.marketValue.local) || 0);
-            existing.marketValue.base = (Number(existing.marketValue.base) || 0) + (Number(h.marketValue.base) || 0);
+            existing.marketValue.local =
+              (Number(existing.marketValue.local) || 0) + (Number(h.marketValue.local) || 0);
+            existing.marketValue.base =
+              (Number(existing.marketValue.base) || 0) + (Number(h.marketValue.base) || 0);
           }
           if (existing.costBasis && h.costBasis) {
-            existing.costBasis.local = (Number(existing.costBasis.local) || 0) + (Number(h.costBasis.local) || 0);
-            existing.costBasis.base = (Number(existing.costBasis.base) || 0) + (Number(h.costBasis.base) || 0);
+            existing.costBasis.local =
+              (Number(existing.costBasis.local) || 0) + (Number(h.costBasis.local) || 0);
+            existing.costBasis.base =
+              (Number(existing.costBasis.base) || 0) + (Number(h.costBasis.base) || 0);
           }
         } else {
           mergedHoldingsMap.set(key, {

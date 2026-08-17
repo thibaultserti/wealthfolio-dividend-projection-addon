@@ -1,14 +1,7 @@
 import React from 'react';
 import type { DividendsSummary } from '../types';
 import { Card, CardContent } from '@wealthfolio/ui';
-import {
-  Coins,
-  Percent,
-  TrendingUp,
-  LineChart,
-  Calendar,
-  Sparkles,
-} from 'lucide-react';
+import { Coins, Percent, TrendingUp, LineChart, Calendar, Sparkles } from 'lucide-react';
 
 interface KPISummaryCardsProps {
   summary: DividendsSummary;
@@ -96,7 +89,8 @@ export const KPISummaryCards: React.FC<KPISummaryCardsProps> = ({ summary }) => 
             <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
               {summary.yieldOnCostPct >= summary.dividendYieldPct ? (
                 <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                  +{(summary.yieldOnCostPct - summary.dividendYieldPct).toFixed(2)}% vs Current Yield
+                  +{(summary.yieldOnCostPct - summary.dividendYieldPct).toFixed(2)}% vs Current
+                  Yield
                 </span>
               ) : (
                 <span>Based on total cost basis</span>
@@ -126,7 +120,9 @@ export const KPISummaryCards: React.FC<KPISummaryCardsProps> = ({ summary }) => 
             </div>
             <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
               <span>5Y CAGR:</span>
-              <span className={`font-semibold ${summary.growth5YPct && summary.growth5YPct > 0 ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>
+              <span
+                className={`font-semibold ${summary.growth5YPct && summary.growth5YPct > 0 ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
+              >
                 {percentFormatter(summary.growth5YPct)}
               </span>
             </div>

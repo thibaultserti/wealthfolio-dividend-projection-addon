@@ -30,8 +30,7 @@ export const MonthDetailView: React.FC<MonthDetailViewProps> = ({
     maximumFractionDigits: 2,
   });
 
-  const prevMonth =
-    currentProjectionIndex > 0 ? projections[currentProjectionIndex - 1] : null;
+  const prevMonth = currentProjectionIndex > 0 ? projections[currentProjectionIndex - 1] : null;
   const nextMonth =
     currentProjectionIndex < projections.length - 1
       ? projections[currentProjectionIndex + 1]
@@ -49,7 +48,8 @@ export const MonthDetailView: React.FC<MonthDetailViewProps> = ({
               {projection.monthLabel} Breakdown
             </CardTitle>
             <div className="text-xs text-muted-foreground mt-0.5">
-              {projection.payoutCount} {projection.payoutCount === 1 ? 'dividend source' : 'dividend sources'} scheduled
+              {projection.payoutCount}{' '}
+              {projection.payoutCount === 1 ? 'dividend source' : 'dividend sources'} scheduled
             </div>
           </div>
         </div>
@@ -57,7 +57,9 @@ export const MonthDetailView: React.FC<MonthDetailViewProps> = ({
         {/* Month navigation pills & Month Total */}
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <div className="text-xs text-muted-foreground uppercase tracking-wider">Month Total</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-wider">
+              Month Total
+            </div>
             <div className="text-lg font-bold text-foreground">
               {currencyFormatter.format(projection.totalAmountBase)}
             </div>
@@ -117,7 +119,9 @@ export const MonthDetailView: React.FC<MonthDetailViewProps> = ({
         {projection.items.length === 0 ? (
           <div className="py-8 text-center text-muted-foreground flex flex-col items-center justify-center gap-2">
             <Layers className="w-8 h-8 opacity-30" />
-            <div className="text-sm font-medium">No dividends scheduled for {projection.monthLabel}</div>
+            <div className="text-sm font-medium">
+              No dividends scheduled for {projection.monthLabel}
+            </div>
             <div className="text-xs text-muted-foreground max-w-sm">
               None of your active holdings are projected to distribute dividends during this month.
             </div>
@@ -146,7 +150,10 @@ export const MonthDetailView: React.FC<MonthDetailViewProps> = ({
                         <span className="text-xs text-muted-foreground font-mono">
                           {item.symbol}
                         </span>
-                        <Badge variant="secondary" className="text-[10px] uppercase py-0 px-1.5 h-4">
+                        <Badge
+                          variant="secondary"
+                          className="text-[10px] uppercase py-0 px-1.5 h-4"
+                        >
                           {item.frequency}
                         </Badge>
                       </div>

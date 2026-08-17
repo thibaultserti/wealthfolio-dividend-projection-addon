@@ -96,9 +96,7 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
                 key={row.year}
                 onClick={() => onSelectYear(row.year)}
                 className={`cursor-pointer transition-colors ${
-                  isSelected
-                    ? 'bg-primary/15 dark:bg-emerald-950/40'
-                    : 'hover:bg-muted/50'
+                  isSelected ? 'bg-primary/15 dark:bg-emerald-950/40' : 'hover:bg-muted/50'
                 }`}
               >
                 {/* Year Cell */}

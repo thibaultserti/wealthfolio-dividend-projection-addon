@@ -27,7 +27,8 @@
     "dev": "vite build --watch",
     "clean": "rm -rf dist",
     "package": "pnpm build && zip -r dist/portfolio-metrics-addon.zip manifest.json dist/addon.js README.md",
-    "lint": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
     "type-check": "tsc --noEmit",
     "test": "vitest run"
   },

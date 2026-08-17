@@ -161,7 +161,7 @@ describe('monthly-performance-utils', () => {
     // Portfolio Apr-Jun: 1.04 * 1.02 * 1.05 - 1 = 0.113824
     // Benchmark Apr-Jun: 1.01 * 1.01 * 1.02 - 1 = 0.040502
     // Alpha for year: 0.113824 - 0.040502 = 0.073322
-    const expectedAlpha = (1.04 * 1.02 * 1.05 - 1) - (1.01 * 1.01 * 1.02 - 1);
+    const expectedAlpha = 1.04 * 1.02 * 1.05 - 1 - (1.01 * 1.01 * 1.02 - 1);
     expect(comparison[0].relativeYearTotal).toBeCloseTo(expectedAlpha, 4);
 
     // Test KPIs alpha calculation

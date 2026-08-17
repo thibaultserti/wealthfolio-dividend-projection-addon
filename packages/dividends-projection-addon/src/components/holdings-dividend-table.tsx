@@ -1,19 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import type { HoldingDividendInfo } from '../types';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Input,
-  Badge,
-  Button,
-} from '@wealthfolio/ui';
-import {
-  Search,
-  ArrowUpDown,
-  Table as TableIcon,
-} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, Input, Badge, Button } from '@wealthfolio/ui';
+import { Search, ArrowUpDown, Table as TableIcon } from 'lucide-react';
 import { TickerLogo } from './ticker-logo';
 
 interface HoldingsDividendTableProps {
@@ -50,11 +38,11 @@ const MONTH_NAMES_SHORT = [
 // 5-Tier Vibrant Colors (same system as portfolio-metrics-addon)
 const C = {
   VERY_GOOD: '#22c55e', // Vert foncé / vif (Excellence)
-  GOOD: '#4ade80',      // Vert clair (Bon)
-  AVERAGE: '#f59e0b',   // Orange / Ambre (Moyen)
-  BAD: '#f87171',       // Rouge clair / Rose (Médiocre)
-  VERY_BAD: '#ef4444',  // Rouge vif (Très mauvais)
-  MUTED: '#9ca3af',     // Gris neutre (Non dispo / N/A)
+  GOOD: '#4ade80', // Vert clair (Bon)
+  AVERAGE: '#f59e0b', // Orange / Ambre (Moyen)
+  BAD: '#f87171', // Rouge clair / Rose (Médiocre)
+  VERY_BAD: '#ef4444', // Rouge vif (Très mauvais)
+  MUTED: '#9ca3af', // Gris neutre (Non dispo / N/A)
 };
 
 const getDividendYieldColor = (val: number | null | undefined): string => {
@@ -68,7 +56,7 @@ const getDividendYieldColor = (val: number | null | undefined): string => {
 
 const getYieldOnCostColor = (
   yoc: number | null | undefined,
-  divYield?: number | null | undefined
+  divYield?: number | null | undefined,
 ): string => {
   if (yoc === null || yoc === undefined || isNaN(yoc) || yoc <= 0) return C.MUTED;
   if (yoc >= 6.0 || (divYield && divYield > 0 && yoc >= divYield * 1.35)) return C.VERY_GOOD;
@@ -127,10 +115,7 @@ export const HoldingsDividendTable: React.FC<HoldingsDividendTableProps> = ({
         if (payersOnly && !h.isPayer) return false;
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase();
-          return (
-            h.symbol.toLowerCase().includes(q) ||
-            h.name.toLowerCase().includes(q)
-          );
+          return h.symbol.toLowerCase().includes(q) || h.name.toLowerCase().includes(q);
         }
         return true;
       })
@@ -218,27 +203,42 @@ export const HoldingsDividendTable: React.FC<HoldingsDividendTableProps> = ({
         <table className="w-full text-left text-xs border-collapse">
           <thead>
             <tr className="border-b border-border/40 bg-muted/20 text-muted-foreground uppercase text-[10px] tracking-wider select-none font-semibold">
-              <th className="py-2.5 px-4 cursor-pointer hover:text-foreground" onClick={() => handleSort('symbol')}>
+              <th
+                className="py-2.5 px-4 cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('symbol')}
+              >
                 <div className="flex items-center gap-1">
                   Holding <ArrowUpDown className="w-3 h-3 opacity-60" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('marketValue')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('marketValue')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   Market Value <ArrowUpDown className="w-3 h-3 opacity-60" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('annualDividendBase')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('annualDividendBase')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   Annual Payout <ArrowUpDown className="w-3 h-3 opacity-60" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('dividendYieldPct')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('dividendYieldPct')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   Div Yield <ArrowUpDown className="w-3 h-3 opacity-60" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('yieldOnCostPct')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('yieldOnCostPct')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   Yield on Cost <ArrowUpDown className="w-3 h-3 opacity-60" />
                 </div>
@@ -246,17 +246,26 @@ export const HoldingsDividendTable: React.FC<HoldingsDividendTableProps> = ({
               <th className="py-2.5 px-3 text-center">
                 <span>Frequency & Schedule</span>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('growth12MPct')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('growth12MPct')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   12M Growth <ArrowUpDown className="w-3 h-3 opacity-60" />
                 </div>
               </th>
-              <th className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('growth5YPct')}>
+              <th
+                className="py-2.5 px-3 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('growth5YPct')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   5Y CAGR <ArrowUpDown className="w-3 h-3 opacity-60" />
                 </div>
               </th>
-              <th className="py-2.5 px-4 text-right cursor-pointer hover:text-foreground" onClick={() => handleSort('weightInIncomePct')}>
+              <th
+                className="py-2.5 px-4 text-right cursor-pointer hover:text-foreground"
+                onClick={() => handleSort('weightInIncomePct')}
+              >
                 <div className="flex items-center justify-end gap-1">
                   Income Share <ArrowUpDown className="w-3 h-3 opacity-60" />
                 </div>
@@ -284,10 +293,7 @@ export const HoldingsDividendTable: React.FC<HoldingsDividendTableProps> = ({
                     : '—';
 
                 return (
-                  <tr
-                    key={h.holdingId}
-                    className="hover:bg-accent/30 transition-colors"
-                  >
+                  <tr key={h.holdingId} className="hover:bg-accent/30 transition-colors">
                     {/* Holding Symbol & Name */}
                     <td className="py-2.5 px-4">
                       <div className="flex items-center gap-2.5">

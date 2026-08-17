@@ -56,38 +56,32 @@ export const MetricsSummaryCard: React.FC<MetricsSummaryCardProps> = ({
             <StatMetricRow label="Nombre d'actions" value={general.stockCount} />
             <StatMetricRow
               label="Top 5 du portefeuille"
-              value={fmtNum(general.top5Concentration, ' %', general.top5Concentration % 1 === 0 ? 0 : 2)}
+              value={fmtNum(
+                general.top5Concentration,
+                ' %',
+                general.top5Concentration % 1 === 0 ? 0 : 2,
+              )}
             />
             <StatMetricRow
               label="Top 10 du portefeuille"
-              value={fmtNum(general.top10Concentration, ' %', general.top10Concentration % 1 === 0 ? 0 : 2)}
+              value={fmtNum(
+                general.top10Concentration,
+                ' %',
+                general.top10Concentration % 1 === 0 ? 0 : 2,
+              )}
             />
-            <StatMetricRow
-              label="Market Cap"
-              value={fmtNum(general.weightedMarketCap, ' M$')}
-            />
-            <StatMetricRow
-              label="Note Q"
-              value={general.qualityScore}
-              isScore={true}
-            />
+            <StatMetricRow label="Market Cap" value={fmtNum(general.weightedMarketCap, ' M$')} />
+            <StatMetricRow label="Note Q" value={general.qualityScore} isScore={true} />
           </div>
 
           {/* Section: Retours sur capitaux */}
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold text-foreground/90 mb-2.5">Retours sur capitaux</h3>
-            <StatMetricRow
-              label="ROIC"
-              value={fmtPercent(returnsOnCapital.roic)}
-            />
-            <StatMetricRow
-              label="ROCE"
-              value={fmtPercent(returnsOnCapital.roce)}
-            />
-            <StatMetricRow
-              label="ROE"
-              value={fmtPercent(returnsOnCapital.roe)}
-            />
+            <h3 className="text-sm font-semibold text-foreground/90 mb-2.5">
+              Retours sur capitaux
+            </h3>
+            <StatMetricRow label="ROIC" value={fmtPercent(returnsOnCapital.roic)} />
+            <StatMetricRow label="ROCE" value={fmtPercent(returnsOnCapital.roce)} />
+            <StatMetricRow label="ROE" value={fmtPercent(returnsOnCapital.roe)} />
           </div>
 
           {/* Section: Santé */}
@@ -101,10 +95,7 @@ export const MetricsSummaryCard: React.FC<MetricsSummaryCardProps> = ({
               label="Interests Coverage"
               value={health.interestCoverage != null ? fmtNum(health.interestCoverage, '', 2) : '—'}
             />
-            <StatMetricRow
-              label="Goodwill/Assets"
-              value={fmtPercent(health.goodwillToAssets)}
-            />
+            <StatMetricRow label="Goodwill/Assets" value={fmtPercent(health.goodwillToAssets)} />
           </div>
         </div>
 
@@ -113,35 +104,20 @@ export const MetricsSummaryCard: React.FC<MetricsSummaryCardProps> = ({
           {/* Section: Marges */}
           <div className="space-y-1">
             <h3 className="text-sm font-semibold text-foreground/90 mb-2.5">Marges</h3>
-            <StatMetricRow
-              label="Marge brute"
-              value={fmtPercent(margins.grossMargin)}
-            />
+            <StatMetricRow label="Marge brute" value={fmtPercent(margins.grossMargin)} />
             <StatMetricRow
               label="Marge opérationnelle"
               value={fmtPercent(margins.operatingMargin)}
             />
-            <StatMetricRow
-              label="Marge nette"
-              value={fmtPercent(margins.netMargin)}
-            />
+            <StatMetricRow label="Marge nette" value={fmtPercent(margins.netMargin)} />
           </div>
 
           {/* Section: Croissance */}
           <div className="space-y-1">
             <h3 className="text-sm font-semibold text-foreground/90 mb-2.5">Croissance</h3>
-            <StatMetricRow
-              label="Croissance revenus"
-              value={fmtPercent(growth.revenueGrowth)}
-            />
-            <StatMetricRow
-              label="Croissance EPS"
-              value={fmtPercent(growth.epsGrowth)}
-            />
-            <StatMetricRow
-              label="Croissance FCF"
-              value={fmtPercent(growth.fcfGrowth)}
-            />
+            <StatMetricRow label="Croissance revenus" value={fmtPercent(growth.revenueGrowth)} />
+            <StatMetricRow label="Croissance EPS" value={fmtPercent(growth.epsGrowth)} />
+            <StatMetricRow label="Croissance FCF" value={fmtPercent(growth.fcfGrowth)} />
           </div>
 
           {/* Section: Valorisation */}
@@ -149,19 +125,10 @@ export const MetricsSummaryCard: React.FC<MetricsSummaryCardProps> = ({
             <h3 className="text-sm font-semibold text-foreground/90 mb-2.5">Valorisation</h3>
             <StatMetricRow label="P/E Ratio (Actuel)" value={fmtNum(valuation.peRatio, '', 2)} />
             <StatMetricRow label="Forward P/E" value={fmtNum(valuation.forwardPE, '', 2)} />
-            <StatMetricRow
-              label="PEG Ratio"
-              value={fmtNum(valuation.pegRatio, '', 2)}
-            />
-            <StatMetricRow
-              label="P/E sur coût"
-              value={fmtNum(valuation.peOnCost, '', 2)}
-            />
+            <StatMetricRow label="PEG Ratio" value={fmtNum(valuation.pegRatio, '', 2)} />
+            <StatMetricRow label="P/E sur coût" value={fmtNum(valuation.peOnCost, '', 2)} />
             <StatMetricRow label="P/FCF Ratio" value={fmtNum(valuation.pfcfRatio, '', 2)} />
-            <StatMetricRow
-              label="P/FCF sur coût"
-              value={fmtNum(valuation.pfcfOnCost, '', 2)}
-            />
+            <StatMetricRow label="P/FCF sur coût" value={fmtNum(valuation.pfcfOnCost, '', 2)} />
             {valuation.evToEbitda != null && (
               <StatMetricRow label="EV/EBITDA" value={fmtNum(valuation.evToEbitda, '', 2)} />
             )}
