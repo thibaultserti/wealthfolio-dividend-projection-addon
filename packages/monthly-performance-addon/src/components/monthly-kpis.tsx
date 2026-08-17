@@ -20,6 +20,7 @@ interface MonthlyKPIsProps {
 export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName }) => {
   const formatPercent = (val: number | null) => {
     if (val === null || isNaN(val)) return '—';
+    if (Math.abs(val) < 0.00005) return '0.00%';
     const sign = val > 0 ? '+' : '';
     return `${sign}${(val * 100).toFixed(2)}%`;
   };
@@ -29,10 +30,15 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
     return `${MONTH_NAMES[m.month]} ${m.year}`;
   };
 
-  const isBestMonthPositive = kpis.bestMonth?.value !== null && kpis.bestMonth?.value !== undefined ? kpis.bestMonth.value >= 0 : null;
-  const isWorstMonthPositive = kpis.worstMonth?.value !== null && kpis.worstMonth?.value !== undefined ? kpis.worstMonth.value >= 0 : null;
-  const isCurrentYearPositive = kpis.currentYearReturn !== null ? kpis.currentYearReturn >= 0 : null;
-  const isAlphaPositive = kpis.alphaVsBenchmark !== null ? kpis.alphaVsBenchmark >= 0 : null;
+  const getStatus = (val: number | null | undefined): 'positive' | 'negative' | null => {
+    if (val === null || val === undefined || isNaN(val) || Math.abs(val) < 0.00005) return null;
+    return val > 0 ? 'positive' : 'negative';
+  };
+
+  const bestMonthStatus = getStatus(kpis.bestMonth?.value);
+  const worstMonthStatus = getStatus(kpis.worstMonth?.value);
+  const currentYearStatus = getStatus(kpis.currentYearReturn);
+  const alphaStatus = getStatus(kpis.alphaVsBenchmark);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -59,11 +65,11 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
           <div className="mt-3">
             <div
               className={`text-2xl font-bold tracking-tight font-mono ${
-                isBestMonthPositive === null
-                  ? 'text-muted-foreground'
-                  : isBestMonthPositive
-                    ? 'kpi-perf-gain'
-                    : 'kpi-perf-loss'
+                bestMonthStatus === 'positive'
+                  ? 'kpi-perf-gain'
+                  : bestMonthStatus === 'negative'
+                    ? 'kpi-perf-loss'
+                    : 'text-muted-foreground'
               }`}
             >
               {formatPercent(kpis.bestMonth?.value ?? null)}
@@ -90,11 +96,11 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
           <div className="mt-3">
             <div
               className={`text-2xl font-bold tracking-tight font-mono ${
-                isWorstMonthPositive === null
-                  ? 'text-muted-foreground'
-                  : isWorstMonthPositive
-                    ? 'kpi-perf-gain'
-                    : 'kpi-perf-loss'
+                worstMonthStatus === 'positive'
+                  ? 'kpi-perf-gain'
+                  : worstMonthStatus === 'negative'
+                    ? 'kpi-perf-loss'
+                    : 'text-muted-foreground'
               }`}
             >
               {formatPercent(kpis.worstMonth?.value ?? null)}
@@ -148,11 +154,11 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
               <>
                 <div
                   className={`text-2xl font-bold tracking-tight font-mono ${
-                    isAlphaPositive === null
-                      ? 'text-muted-foreground'
-                      : isAlphaPositive
-                        ? 'kpi-perf-gain'
-                        : 'kpi-perf-loss'
+                    alphaStatus === 'positive'
+                      ? 'kpi-perf-gain'
+                      : alphaStatus === 'negative'
+                        ? 'kpi-perf-loss'
+                        : 'text-muted-foreground'
                   }`}
                 >
                   {formatPercent(kpis.alphaVsBenchmark)}
@@ -165,11 +171,11 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
               <>
                 <div
                   className={`text-2xl font-bold tracking-tight font-mono ${
-                    isCurrentYearPositive === null
-                      ? 'text-muted-foreground'
-                      : isCurrentYearPositive
-                        ? 'kpi-perf-gain'
-                        : 'kpi-perf-loss'
+                    currentYearStatus === 'positive'
+                      ? 'kpi-perf-gain'
+                      : currentYearStatus === 'negative'
+                        ? 'kpi-perf-loss'
+                        : 'text-muted-foreground'
                   }`}
                 >
                   {formatPercent(kpis.currentYearReturn)}

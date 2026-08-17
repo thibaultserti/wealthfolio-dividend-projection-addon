@@ -78,8 +78,16 @@ export const MonthlyPerformanceChart: React.FC<MonthlyPerformanceChartProps> = (
 
   const formatGain = (val: number | null) => {
     if (val === null || isNaN(val)) return '—';
+    if (Math.abs(val) < 0.00005) return '0.00%';
     const sign = val > 0 ? '+' : '';
     return `${sign}${(val * 100).toFixed(2)}%`;
+  };
+
+  const getGainColor = (val: number | null) => {
+    if (val === null || isNaN(val) || Math.abs(val) < 0.00005) {
+      return 'text-muted-foreground';
+    }
+    return val > 0 ? 'text-emerald-500' : 'text-rose-500';
   };
 
   return (
@@ -151,11 +159,7 @@ export const MonthlyPerformanceChart: React.FC<MonthlyPerformanceChartProps> = (
                     {point.portfolioReturn !== null && (
                       <div className="flex items-center justify-between gap-4">
                         <span className="text-muted-foreground truncate">{portfolioName}:</span>
-                        <span
-                          className={`font-mono font-semibold ${
-                            point.portfolioReturn >= 0 ? 'text-emerald-500' : 'text-rose-500'
-                          }`}
-                        >
+                        <span className={`font-mono font-semibold ${getGainColor(point.portfolioReturn)}`}>
                           {formatGain(point.portfolioReturn)}
                         </span>
                       </div>
@@ -163,11 +167,7 @@ export const MonthlyPerformanceChart: React.FC<MonthlyPerformanceChartProps> = (
                     {benchmarkName && point.benchmarkReturn !== null && (
                       <div className="flex items-center justify-between gap-4">
                         <span className="text-muted-foreground truncate">{benchmarkName}:</span>
-                        <span
-                          className={`font-mono font-semibold ${
-                            point.benchmarkReturn >= 0 ? 'text-emerald-500' : 'text-rose-500'
-                          }`}
-                        >
+                        <span className={`font-mono font-semibold ${getGainColor(point.benchmarkReturn)}`}>
                           {formatGain(point.benchmarkReturn)}
                         </span>
                       </div>
@@ -175,11 +175,7 @@ export const MonthlyPerformanceChart: React.FC<MonthlyPerformanceChartProps> = (
                     {benchmarkName && point.relativeReturn !== null && (
                       <div className="border-border/60 mt-1.5 flex items-center justify-between gap-4 border-t pt-1.5">
                         <span className="text-muted-foreground font-medium">Alpha (Excess):</span>
-                        <span
-                          className={`font-mono font-bold ${
-                            point.relativeReturn >= 0 ? 'text-emerald-500' : 'text-rose-500'
-                          }`}
-                        >
+                        <span className={`font-mono font-bold ${getGainColor(point.relativeReturn)}`}>
                           {formatGain(point.relativeReturn)}
                         </span>
                       </div>
@@ -199,8 +195,8 @@ export const MonthlyPerformanceChart: React.FC<MonthlyPerformanceChartProps> = (
           >
             {data.map((entry, index) => {
               const val = entry.value;
-              if (val === null) return <Cell key={`cell-${index}`} fill="transparent" />;
-              const isPositive = val >= 0;
+              if (val === null || Math.abs(val) < 0.00005) return <Cell key={`cell-${index}`} fill="transparent" />;
+              const isPositive = val > 0;
               return (
                 <Cell
                   key={`cell-${index}`}

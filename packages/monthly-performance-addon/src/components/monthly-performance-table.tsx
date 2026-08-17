@@ -27,6 +27,7 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
 
   const formatPercent = (val: number | null) => {
     if (val === null || isNaN(val)) return '—';
+    if (Math.abs(val) < 0.00005) return '0.00%';
     const sign = val > 0 ? '+' : '';
     return `${sign}${(val * 100).toFixed(2)}%`;
   };
@@ -74,15 +75,19 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
               yearTotalValue = row.portfolioYearTotal;
             }
 
-            // Determine if year total is positive / outperforming benchmark
-            let isYearPositive: boolean | null = null;
-            if (yearTotalValue !== null) {
+            // Determine year total color status (positive, negative, neutral)
+            let yearStatus: 'positive' | 'negative' | 'neutral' = 'neutral';
+            if (yearTotalValue !== null && Math.abs(yearTotalValue) >= 0.00005) {
               if (viewMode === 'portfolio' && hasBenchmark && row.relativeYearTotal !== null) {
-                isYearPositive = row.relativeYearTotal >= 0;
+                if (Math.abs(row.relativeYearTotal) >= 0.00005) {
+                  yearStatus = row.relativeYearTotal > 0 ? 'positive' : 'negative';
+                }
               } else if (viewMode === 'relative') {
-                isYearPositive = row.relativeYearTotal !== null ? row.relativeYearTotal >= 0 : null;
+                if (row.relativeYearTotal !== null && Math.abs(row.relativeYearTotal) >= 0.00005) {
+                  yearStatus = row.relativeYearTotal > 0 ? 'positive' : 'negative';
+                }
               } else {
-                isYearPositive = yearTotalValue >= 0;
+                yearStatus = yearTotalValue > 0 ? 'positive' : 'negative';
               }
             }
 
@@ -132,14 +137,16 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
                     );
                   }
 
-                  // If benchmark is selected, green means outperforming benchmark (relativeReturn >= 0), red means underperforming
-                  let isPositive: boolean;
-                  if (viewMode === 'portfolio' && hasBenchmark && cell.relativeReturn !== null) {
-                    isPositive = cell.relativeReturn >= 0;
-                  } else if (viewMode === 'relative') {
-                    isPositive = val >= 0;
-                  } else {
-                    isPositive = val >= 0;
+                  // Determine color status: positive, negative, or neutral (0% = neutral)
+                  let cellStatus: 'positive' | 'negative' | 'neutral' = 'neutral';
+                  if (Math.abs(val) >= 0.00005) {
+                    if (viewMode === 'portfolio' && hasBenchmark && cell.relativeReturn !== null) {
+                      if (Math.abs(cell.relativeReturn) >= 0.00005) {
+                        cellStatus = cell.relativeReturn > 0 ? 'positive' : 'negative';
+                      }
+                    } else {
+                      cellStatus = val > 0 ? 'positive' : 'negative';
+                    }
                   }
 
                   return (
@@ -156,7 +163,15 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
                             : undefined
                       }
                     >
-                      <span className={isPositive ? 'monthly-perf-gain font-semibold' : 'monthly-perf-loss font-semibold'}>
+                      <span
+                        className={
+                          cellStatus === 'positive'
+                            ? 'monthly-perf-gain font-semibold'
+                            : cellStatus === 'negative'
+                              ? 'monthly-perf-loss font-semibold'
+                              : 'text-muted-foreground font-normal'
+                        }
+                      >
                         {formatPercent(val)}
                       </span>
                     </td>
@@ -168,11 +183,11 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
                   {yearTotalValue !== null ? (
                     <span
                       className={
-                        isYearPositive === null
-                          ? 'text-muted-foreground font-bold'
-                          : isYearPositive
-                            ? 'monthly-perf-gain font-bold'
-                            : 'monthly-perf-loss font-bold'
+                        yearStatus === 'positive'
+                          ? 'monthly-perf-gain font-bold'
+                          : yearStatus === 'negative'
+                            ? 'monthly-perf-loss font-bold'
+                            : 'text-muted-foreground font-bold'
                       }
                     >
                       {formatPercent(yearTotalValue)}
