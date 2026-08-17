@@ -113,5 +113,76 @@ describe('monthly-performance-utils', () => {
     expect(kpis.bestMonth?.year).toBe(2024);
     expect(kpis.bestMonth?.value).toBeCloseTo(0.1, 4);
     expect(kpis.totalCumulativeReturn).toBeCloseTo(0.15, 4);
+    expect(kpis.alphaVsBenchmark).toBeNull();
+  });
+
+  it('correctly handles missing portfolio months when calculating alpha and annual relative return', () => {
+    // Portfolio started in April 2024 (Jan, Feb, Mar are null)
+    const portfolio = [
+      {
+        year: 2024,
+        months: [null, null, null, 0.04, 0.02, 0.05, ...Array(6).fill(null)],
+        yearTotal: 1.04 * 1.02 * 1.05 - 1, // +11.38% (Apr-Jun)
+      },
+    ];
+
+    // Benchmark has full data starting in Jan
+    const benchmark = [
+      {
+        year: 2024,
+        months: [0.03, 0.02, 0.01, 0.01, 0.01, 0.02, ...Array(6).fill(null)],
+        yearTotal: 1.03 * 1.02 * 1.01 * 1.01 * 1.01 * 1.02 - 1, // Jan-Jun
+      },
+    ];
+
+    const comparison = buildMonthlyComparison(portfolio, benchmark);
+    expect(comparison).toHaveLength(1);
+
+    // Jan, Feb, Mar: portfolio is missing => relativeReturn MUST be null
+    expect(comparison[0].months[0]?.portfolioReturn).toBeNull();
+    expect(comparison[0].months[0]?.benchmarkReturn).toBe(0.03);
+    expect(comparison[0].months[0]?.relativeReturn).toBeNull();
+
+    expect(comparison[0].months[1]?.relativeReturn).toBeNull();
+    expect(comparison[0].months[2]?.relativeReturn).toBeNull();
+
+    // Apr: portfolio 4%, benchmark 1% => relative +3%
+    expect(comparison[0].months[3]?.portfolioReturn).toBe(0.04);
+    expect(comparison[0].months[3]?.benchmarkReturn).toBe(0.01);
+    expect(comparison[0].months[3]?.relativeReturn).toBeCloseTo(0.03, 4);
+
+    // May: portfolio 2%, benchmark 1% => relative +1%
+    expect(comparison[0].months[4]?.relativeReturn).toBeCloseTo(0.01, 4);
+
+    // Jun: portfolio 5%, benchmark 2% => relative +3%
+    expect(comparison[0].months[5]?.relativeReturn).toBeCloseTo(0.03, 4);
+
+    // Annual relative return must ONLY compound over common months (Apr-Jun)
+    // Portfolio Apr-Jun: 1.04 * 1.02 * 1.05 - 1 = 0.113824
+    // Benchmark Apr-Jun: 1.01 * 1.01 * 1.02 - 1 = 0.040502
+    // Alpha for year: 0.113824 - 0.040502 = 0.073322
+    const expectedAlpha = (1.04 * 1.02 * 1.05 - 1) - (1.01 * 1.01 * 1.02 - 1);
+    expect(comparison[0].relativeYearTotal).toBeCloseTo(expectedAlpha, 4);
+
+    // Test KPIs alpha calculation
+    const kpis = calculatePerformanceKPIs(comparison);
+    expect(kpis.alphaVsBenchmark).toBeCloseTo(expectedAlpha, 4);
+  });
+
+  it('returns null relative returns and alpha when benchmark is not provided or has no common data', () => {
+    const portfolio = [
+      {
+        year: 2024,
+        months: [0.02, 0.03, ...Array(10).fill(null)],
+        yearTotal: 1.02 * 1.03 - 1,
+      },
+    ];
+
+    const comparison = buildMonthlyComparison(portfolio, null);
+    expect(comparison[0].months[0]?.relativeReturn).toBeNull();
+    expect(comparison[0].relativeYearTotal).toBeNull();
+
+    const kpis = calculatePerformanceKPIs(comparison);
+    expect(kpis.alphaVsBenchmark).toBeNull();
   });
 });

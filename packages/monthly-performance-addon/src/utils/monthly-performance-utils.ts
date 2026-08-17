@@ -163,6 +163,9 @@ export function buildMonthlyComparison(
     const bYear = benchmarkYearMap.get(year);
 
     const months: (MonthlyComparisonCell | null)[] = Array(12).fill(null);
+    let commonPortfolioFactor = 1;
+    let commonBenchmarkFactor = 1;
+    let hasCommonMonths = false;
 
     for (let m = 0; m < 12; m++) {
       const pRet = pYear?.months[m] ?? null;
@@ -172,7 +175,15 @@ export function buildMonthlyComparison(
         months[m] = null;
       } else {
         const relativeReturn =
-          pRet !== null && bRet !== null ? pRet - bRet : pRet !== null ? pRet : null;
+          pRet !== null && bRet !== null && Number.isFinite(pRet) && Number.isFinite(bRet)
+            ? pRet - bRet
+            : null;
+
+        if (relativeReturn !== null && pRet !== null && bRet !== null) {
+          commonPortfolioFactor *= 1 + pRet;
+          commonBenchmarkFactor *= 1 + bRet;
+          hasCommonMonths = true;
+        }
 
         months[m] = {
           month: m,
@@ -185,10 +196,11 @@ export function buildMonthlyComparison(
 
     const portfolioYearTotal = pYear?.yearTotal ?? null;
     const benchmarkYearTotal = bYear?.yearTotal ?? null;
-    const relativeYearTotal =
-      portfolioYearTotal !== null && benchmarkYearTotal !== null
-        ? portfolioYearTotal - benchmarkYearTotal
-        : portfolioYearTotal;
+    
+    // Relative year total (Alpha): compounded excess ONLY over months where both portfolio and benchmark have data
+    const relativeYearTotal = hasCommonMonths
+      ? commonPortfolioFactor - 1 - (commonBenchmarkFactor - 1)
+      : null;
 
     return {
       year,
@@ -258,22 +270,31 @@ export function calculatePerformanceKPIs(
     }
   }
 
-  // Alpha vs benchmark (compounded excess across all years with benchmark)
+  // Alpha vs benchmark (compounded excess across all common months where both portfolio and benchmark exist)
   let alphaVsBenchmark: number | null = null;
   let totalPortfolioCompounded = 1;
   let totalBenchmarkCompounded = 1;
-  let hasBenchmarkData = false;
+  let hasCommonData = false;
 
   for (const row of comparisonData) {
-    if (row.portfolioYearTotal !== null && row.benchmarkYearTotal !== null) {
-      totalPortfolioCompounded *= 1 + row.portfolioYearTotal;
-      totalBenchmarkCompounded *= 1 + row.benchmarkYearTotal;
-      hasBenchmarkData = true;
+    for (let m = 0; m < 12; m++) {
+      const cell = row.months[m];
+      if (
+        cell &&
+        cell.portfolioReturn !== null &&
+        Number.isFinite(cell.portfolioReturn) &&
+        cell.benchmarkReturn !== null &&
+        Number.isFinite(cell.benchmarkReturn)
+      ) {
+        totalPortfolioCompounded *= 1 + cell.portfolioReturn;
+        totalBenchmarkCompounded *= 1 + cell.benchmarkReturn;
+        hasCommonData = true;
+      }
     }
   }
 
-  if (hasBenchmarkData) {
-    alphaVsBenchmark = (totalPortfolioCompounded - 1) - (totalBenchmarkCompounded - 1);
+  if (hasCommonData) {
+    alphaVsBenchmark = totalPortfolioCompounded - 1 - (totalBenchmarkCompounded - 1);
   }
 
   return {

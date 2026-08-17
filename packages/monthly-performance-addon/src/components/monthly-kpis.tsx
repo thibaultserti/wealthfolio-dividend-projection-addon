@@ -29,10 +29,10 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
     return `${MONTH_NAMES[m.month]} ${m.year}`;
   };
 
-  const isBestMonthPositive = (kpis.bestMonth?.value ?? 0) >= 0;
-  const isWorstMonthPositive = (kpis.worstMonth?.value ?? 0) >= 0;
-  const isCurrentYearPositive = (kpis.currentYearReturn ?? 0) >= 0;
-  const isAlphaPositive = (kpis.alphaVsBenchmark ?? 0) >= 0;
+  const isBestMonthPositive = kpis.bestMonth?.value !== null && kpis.bestMonth?.value !== undefined ? kpis.bestMonth.value >= 0 : null;
+  const isWorstMonthPositive = kpis.worstMonth?.value !== null && kpis.worstMonth?.value !== undefined ? kpis.worstMonth.value >= 0 : null;
+  const isCurrentYearPositive = kpis.currentYearReturn !== null ? kpis.currentYearReturn >= 0 : null;
+  const isAlphaPositive = kpis.alphaVsBenchmark !== null ? kpis.alphaVsBenchmark >= 0 : null;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -59,7 +59,11 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
           <div className="mt-3">
             <div
               className={`text-2xl font-bold tracking-tight font-mono ${
-                isBestMonthPositive ? 'kpi-perf-gain' : 'kpi-perf-loss'
+                isBestMonthPositive === null
+                  ? 'text-muted-foreground'
+                  : isBestMonthPositive
+                    ? 'kpi-perf-gain'
+                    : 'kpi-perf-loss'
               }`}
             >
               {formatPercent(kpis.bestMonth?.value ?? null)}
@@ -86,7 +90,11 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
           <div className="mt-3">
             <div
               className={`text-2xl font-bold tracking-tight font-mono ${
-                isWorstMonthPositive ? 'kpi-perf-gain' : 'kpi-perf-loss'
+                isWorstMonthPositive === null
+                  ? 'text-muted-foreground'
+                  : isWorstMonthPositive
+                    ? 'kpi-perf-gain'
+                    : 'kpi-perf-loss'
               }`}
             >
               {formatPercent(kpis.worstMonth?.value ?? null)}
@@ -140,7 +148,11 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
               <>
                 <div
                   className={`text-2xl font-bold tracking-tight font-mono ${
-                    isAlphaPositive ? 'kpi-perf-gain' : 'kpi-perf-loss'
+                    isAlphaPositive === null
+                      ? 'text-muted-foreground'
+                      : isAlphaPositive
+                        ? 'kpi-perf-gain'
+                        : 'kpi-perf-loss'
                   }`}
                 >
                   {formatPercent(kpis.alphaVsBenchmark)}
@@ -153,7 +165,11 @@ export const MonthlyKPIs: React.FC<MonthlyKPIsProps> = ({ kpis, benchmarkName })
               <>
                 <div
                   className={`text-2xl font-bold tracking-tight font-mono ${
-                    isCurrentYearPositive ? 'kpi-perf-gain' : 'kpi-perf-loss'
+                    isCurrentYearPositive === null
+                      ? 'text-muted-foreground'
+                      : isCurrentYearPositive
+                        ? 'kpi-perf-gain'
+                        : 'kpi-perf-loss'
                   }`}
                 >
                   {formatPercent(kpis.currentYearReturn)}

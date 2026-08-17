@@ -75,13 +75,15 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
             }
 
             // Determine if year total is positive / outperforming benchmark
-            let isYearPositive: boolean;
-            if (viewMode === 'portfolio' && hasBenchmark && row.relativeYearTotal !== null) {
-              isYearPositive = row.relativeYearTotal >= 0;
-            } else if (viewMode === 'relative') {
-              isYearPositive = (row.relativeYearTotal ?? 0) >= 0;
-            } else {
-              isYearPositive = (yearTotalValue ?? 0) >= 0;
+            let isYearPositive: boolean | null = null;
+            if (yearTotalValue !== null) {
+              if (viewMode === 'portfolio' && hasBenchmark && row.relativeYearTotal !== null) {
+                isYearPositive = row.relativeYearTotal >= 0;
+              } else if (viewMode === 'relative') {
+                isYearPositive = row.relativeYearTotal !== null ? row.relativeYearTotal >= 0 : null;
+              } else {
+                isYearPositive = yearTotalValue >= 0;
+              }
             }
 
             return (
@@ -108,7 +110,7 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
                   if (!cell) {
                     return (
                       <td key={monthIdx} className="py-2.5 px-1 text-center">
-                        <span className="monthly-perf-muted">-</span>
+                        <span className="monthly-perf-muted">—</span>
                       </td>
                     );
                   }
@@ -125,7 +127,7 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
                   if (val === null) {
                     return (
                       <td key={monthIdx} className="py-2.5 px-1 text-center">
-                        <span className="monthly-perf-muted">-</span>
+                        <span className="monthly-perf-muted">—</span>
                       </td>
                     );
                   }
@@ -135,7 +137,7 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
                   if (viewMode === 'portfolio' && hasBenchmark && cell.relativeReturn !== null) {
                     isPositive = cell.relativeReturn >= 0;
                   } else if (viewMode === 'relative') {
-                    isPositive = (cell.relativeReturn ?? 0) >= 0;
+                    isPositive = val >= 0;
                   } else {
                     isPositive = val >= 0;
                   }
@@ -149,7 +151,9 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
                           ? `Portfolio: ${formatPercent(cell.portfolioReturn)} | Benchmark: ${formatPercent(
                               cell.benchmarkReturn,
                             )} | Alpha: ${formatPercent(cell.relativeReturn)}`
-                          : undefined
+                          : cell.portfolioReturn !== null
+                            ? `Portfolio: ${formatPercent(cell.portfolioReturn)}`
+                            : undefined
                       }
                     >
                       <span className={isPositive ? 'monthly-perf-gain font-semibold' : 'monthly-perf-loss font-semibold'}>
@@ -162,11 +166,19 @@ export const MonthlyPerformanceTable: React.FC<MonthlyPerformanceTableProps> = (
                 {/* Year Total / YTD */}
                 <td className="py-2.5 px-3 text-right text-[11px] font-bold rounded-r-lg">
                   {yearTotalValue !== null ? (
-                    <span className={isYearPositive ? 'monthly-perf-gain font-bold' : 'monthly-perf-loss font-bold'}>
+                    <span
+                      className={
+                        isYearPositive === null
+                          ? 'text-muted-foreground font-bold'
+                          : isYearPositive
+                            ? 'monthly-perf-gain font-bold'
+                            : 'monthly-perf-loss font-bold'
+                      }
+                    >
                       {formatPercent(yearTotalValue)}
                     </span>
                   ) : (
-                    <span className="monthly-perf-muted">-</span>
+                    <span className="monthly-perf-muted">—</span>
                   )}
                 </td>
               </tr>
